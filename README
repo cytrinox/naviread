@@ -1,0 +1,6 @@
+naviread
+--------
+
+Auslesen der geloggten Tracks des Navilock NL-456DL und Ausgabe als GPX
+
+Dies ist eine erste Testversion, es werden noch nicht alle Features unterstützt. Das Programm erwartet als einzigen Parameter den Pfad zur Datei NVPIPE.DAT.
