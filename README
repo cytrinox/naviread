@@ -3,4 +3,57 @@ naviread
 
 Auslesen der geloggten Tracks des Navilock NL-456DL und Ausgabe als GPX
 
-Dies ist eine erste Testversion, es werden noch nicht alle Features unterstützt. Das Programm erwartet als einzigen Parameter den Pfad zur Datei NVPIPE.DAT.
+
+Usage: naviread [OPTION]... FILE
+
+mögliche Aktionen:
+  -R, --read[=FILE]        Tracks als GPX (nach FILE) ausgeben
+  -C, --conf               aktuelle Konfiguration ausgeben
+  -A, --analyze            nach unbekannten Werten suchen
+  -H, --help               diese Hilfe anzeigen
+
+mögliche Geräte-Einstellungen:
+      --set-system-unit metric|imperial
+      --set-metric-system
+      --set-imperial-system
+  -z, --set-device-zone <utc offset>
+      --set-password <string>
+      --unset-password
+      --set-contrast <value>
+      --set-backlight-time <seconds>
+  -s, --set-shake-mode on|off
+  -e, --enable-shake-mode
+  -d, --disable-shake-mode
+  -t, --set-shake-mode-time <minutes>
+
+mögliche Log-Einstellungen:
+  -l, --set-log-mode <mode>
+  -w, --log-mode-walk
+  -b, --log-mode-bicycle
+  -c, --log-mode-car
+  -u, --log-mode-user
+  -v, --set-userdefined-log-mode time|distance|heading|speed|mixed
+      --set-userdefined-time-interval <seconds>
+      --set-userdefined-distance-interval <meters>
+      --set-userdefined-heading-change <degrees>
+      --set-userdefined-highest-speed <value>
+      --set-userdefined-high-speed <value>
+      --set-userdefined-middle-speed <value>
+      --set-userdefined-low-speed <value>
+      --set-userdefined-lowest-speed <value>
+      --set-userdefined-highest-speed-interval <value>
+      --set-userdefined-high-speed-interval <value>
+      --set-userdefined-middle-speed-interval <value>
+      --set-userdefined-low-speed-interval <value>
+
+mögliche GPS-Einstellungen:
+  -g, --set-gps-mode high|middle|default|low|fast|user
+      --set-sbas on|off
+      --set-fix-mode 2d|2d3d|3d
+      --set-2d-fix-altitude <centimeters>
+      --set-initial-min-strength <value>
+      --set-navigation-min-strength <value>
+      --set-p-accuracy-mask <value>
+      --set-t-accuracy-mask <value>
+      --set-pdop-mask <value>
+      --set-tdop-mask <value>
