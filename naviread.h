@@ -19,6 +19,8 @@
 #ifndef NAVILIB_H_
 #define NAVILIB_H_
 
+#define CLEAR_MEMORY_NO 0x00
+#define CLEAR_MEMORY_YES 0x01
 #define SYSTEM_UNIT_METRIC 0x00
 #define SYSTEM_UNIT_IMPERIAL 0x01
 #define SHAKE_MODE_OFF 0x00
@@ -45,11 +47,12 @@
 #define FIX_MODE_3D 0x03
 
 
-#define SHORT_OPTIONS "R::CAl:wbcuz:s:edt:v:g:"
+#define SHORT_OPTIONS "R::CAD::Hl:wbcuz:s:edt:v:g:"
 enum {
 KEY_READ = 'R',
 KEY_CONF = 'C',
 KEY_ANALYZE = 'A',
+KEY_CLEAR_MEMORY = 'D',
 KEY_HELP = 'H',
 KEY_SET_LOG_MODE = 'l',
 KEY_LOG_MODE_WALK = 'w',
@@ -100,6 +103,7 @@ KEY_DISABLE_SBAS
 struct naviconf
 {
 	unsigned char log_mode;
+	unsigned char clear_memory;
 	short device_zone;
 	unsigned char shake_mode;
 	unsigned char shake_mode_time;

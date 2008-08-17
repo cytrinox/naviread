@@ -29,6 +29,7 @@ int main(int argc, char *argv[], char *env[])
 		{"read", optional_argument, NULL, KEY_READ},
 		{"conf", no_argument, NULL, KEY_CONF},
 		{"analyze", no_argument, NULL, KEY_ANALYZE},
+		{"clear-memory", optional_argument, NULL, KEY_CLEAR_MEMORY},
 		{"help", no_argument, NULL, KEY_HELP},
 		{"set-log-mode", required_argument, NULL, KEY_SET_LOG_MODE},
 		{"log-mode-walk", no_argument, NULL, KEY_LOG_MODE_WALK},
@@ -153,6 +154,23 @@ int main(int argc, char *argv[], char *env[])
 				action_analyze = 1;
 				break;
 			
+			case KEY_CLEAR_MEMORY:
+				if (optarg != NULL && ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "no") || !stricmp(optarg, "off")))
+				{
+					nvconf.clear_memory = CLEAR_MEMORY_NO;
+				}
+				else if (optarg == NULL || (*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
+				{
+					nvconf.clear_memory = CLEAR_MEMORY_YES;
+				}
+				else
+				{
+					fprintf(stderr, "error: invalid value '%s' for option '-%c'\n", optarg, option);
+					fprintf(stderr, "valid values: yes, no\n");
+					exit(EXIT_FAILURE);
+				}
+				break;
+			
 			case KEY_HELP:
 				action_help = 1;
 				break;
@@ -263,11 +281,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_SHAKE_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "off"))
+				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "off"))
 				{
 					nvconf.shake_mode = SHAKE_MODE_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "on"))
+				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
 				{
 					nvconf.shake_mode = SHAKE_MODE_ON;
 				}
@@ -586,11 +604,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_SBAS:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "off"))
+				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "off"))
 				{
 					nvconf.sbas = SBAS_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "on"))
+				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
 				{
 					nvconf.sbas = SBAS_ON;
 				}
@@ -827,6 +845,7 @@ void usage(char *prog)
 	printf("  -%c, --read[=FILE]        Tracks als GPX (nach FILE) ausgeben\n", KEY_READ);
 	printf("  -%c, --conf               aktuelle Konfiguration ausgeben\n", KEY_CONF);
 	printf("  -%c, --analyze            nach unbekannten Werten suchen\n", KEY_ANALYZE);
+	printf("  -%c, --clear-memory[=y|n] Speicher beim nächsten Start leeren\n", KEY_CLEAR_MEMORY);
 	printf("  -%c, --help               diese Hilfe anzeigen\n", KEY_HELP);
 	printf("\n");
 	printf("mögliche Geräte-Einstellungen:\n");
@@ -884,6 +903,8 @@ int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 	
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
+	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
+	if (fread(&nvconf->clear_memory, 1, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0004, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->device_zone, 2, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
@@ -986,6 +1007,14 @@ void print_conf(struct naviconf *nvconf)
 	
 	printf("Shake-Modus-Zeit: %dm\n", nvconf->shake_mode_time);
 
+	printf("Speicher leeren: ");
+	switch (nvconf->clear_memory)
+	{
+		case CLEAR_MEMORY_NO: printf("nein\n"); break;
+		case CLEAR_MEMORY_YES: printf("ja\n"); break;
+		default: printf("unbekannt\n"); break;
+	}
+
 
 	puts("");
 	puts("Logeinstellungen");
@@ -1080,6 +1109,8 @@ int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fwrite(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
+	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
+	if (fwrite(&nvconf->clear_memory, 1, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0004, SEEK_SET) != 0) return -1;
 	if (fwrite(&nvconf->device_zone, 2, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
@@ -1203,10 +1234,10 @@ void print_track(FILE *output, struct trackpoint *start)
 	}
 	
   fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-  fprintf(output, "<gpx version=\"1.1\" creator=\"naviread 0.2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
+  fprintf(output, "<gpx version=\"1.1\" creator=\"naviread 0.2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
 	
 	fprintf(output, "<metadata>\n");
-	fprintf(output, "<bounds minlat=\"%f\" minlon=\"%f\" maxlat=\"%f\" maxlon=\"%f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
+	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
 	fprintf(output, "</metadata>\n");
   
 	
@@ -1302,6 +1333,10 @@ int analyze(FILE *nvpipe)
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
 	if (value != 1 && value != 2 && value != 3 && value != 4) printf("unknown value '%u' at offset 0x00000000\n", value);
+
+	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
+	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
+	if (value != 0 && value != 1) printf("unknown value '%u' at offset 0x00000002\n", value);
 
 	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;

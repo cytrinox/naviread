@@ -3,6 +3,8 @@ naviread
 
 Auslesen der geloggten Tracks des Navilock NL-456DL und Ausgabe als GPX
 
+ACHTUNG: Nicht alle Optionen wurden getestet. Benutzung auf eigene Gefahr.
+
 
 Usage: naviread [OPTION]... FILE
 
@@ -10,6 +12,7 @@ mögliche Aktionen:
   -R, --read[=FILE]        Tracks als GPX (nach FILE) ausgeben
   -C, --conf               aktuelle Konfiguration ausgeben
   -A, --analyze            nach unbekannten Werten suchen
+  -D, --clear-memory[=y|n] Speicher beim nächsten Start leeren
   -H, --help               diese Hilfe anzeigen
 
 mögliche Geräte-Einstellungen:
