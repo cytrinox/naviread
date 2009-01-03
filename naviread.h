@@ -15,6 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#define stricmp strcmp
 
 #ifndef NAVILIB_H_
 #define NAVILIB_H_

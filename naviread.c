@@ -1243,18 +1243,15 @@ void print_track(FILE *output, struct trackpoint *start)
 	
   wptcount = 0;
   ptr = start;
-	
-  while (ptr)
-  {
-    if (ptr->type & 2)
-    {
-			fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
-			fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
-			fprintf(output, "<time>%d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
-			fprintf(output, "<name>Push Log Point %d</name>\n", ++wptcount);
-			fprintf(output, "</wpt>\n");
+
+  while (ptr) {
+    if(ptr->type & 2) {
+	fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
+	fprintf(output, "<ele>%g</ele>", (double)ptr->height);
+	fprintf(output, "<time>%d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
+	fprintf(output, "<name>Push Log Point %d</name>", ++wptcount);
+	fprintf(output, "</wpt>\n");
     }
-		
     ptr = ptr->next;
   }
 	
@@ -1275,24 +1272,23 @@ void print_track(FILE *output, struct trackpoint *start)
 			
       // neuen Track starten
       ++trackcount;
-      fprintf(output, "<trk>\n");
-      fprintf(output, "<name>Track %d</name>\n", trackcount);
+      fprintf(output, "<trk>");
+      fprintf(output, "<name>Track %d</name>", trackcount);
       fprintf(output, "<number>%d</number>\n", trackcount);
       fprintf(output, "<trkseg>\n");
     }
     
     // Trackpunkt ausgeben
-    fprintf(output, "<trkpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
-    fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
-		fprintf(output, "<time>%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
+    fprintf(output, "  <trkpt lat=\"%.7f\" lon=\"%.7f\">", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
+    fprintf(output, "<ele>%g</ele>", (double)ptr->height);
+		fprintf(output, "<time>%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
     fprintf(output, "</trkpt>\n");
-    
+
     ptr = ptr->next;
   }
 	
   // ggf. alten Track abschließen
-  if (trackcount > 0)
-  {
+  if (trackcount > 0) {
     fprintf(output, "</trkseg>\n");
     fprintf(output, "</trk>\n");
   }
@@ -1384,7 +1380,6 @@ int analyze(FILE *nvpipe)
 			printf("time = %4d-%.2d-%.2dT%.2d:%.2d:%.2dZ\n", 2000+point.time.Y, point.time.m, point.time.d, point.time.h, point.time.i, point.time.s);
 			printf("lat = %.7f, lon = %.7f, alt = %d\n", (double)point.latitude/10000000, (double)point.longitude/10000000, point.height);
 		}
-	}
-	
-	return 0;
+  }
+  return 0;
 }
