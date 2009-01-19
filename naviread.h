@@ -16,8 +16,8 @@
 */
 
 
-#ifndef NAVILIB_H_
-#define NAVILIB_H_
+#ifndef NAVIREAD_H_
+#define NAVIREAD_H_
 
 #define CLEAR_MEMORY_NO 0x00
 #define CLEAR_MEMORY_YES 0x01
