@@ -1,18 +1,18 @@
 /*
-    Copyright (C) 2008 Alexander Steffen
+	Copyright (C) 2008 Alexander Steffen
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include <stdlib.h>
@@ -78,17 +78,17 @@ int main(int argc, char *argv[], char *env[])
 	};
 
 
-  int option;
-  int index;
+	int option;
+	int index;
 	int ivalue;
 	int hrs;
 	int mins;
 	char *pos;
-  char *gpxfile = NULL;
-  char *nvfile = NULL;
-  FILE *nvpipe;
-  FILE *gpxpipe;
-  struct naviconf nvconf;
+	char *gpxfile = NULL;
+	char *nvfile = NULL;
+	FILE *nvpipe;
+	FILE *gpxpipe;
+	struct naviconf nvconf;
 	
 	
 	char action_read = 0;
@@ -115,13 +115,13 @@ int main(int argc, char *argv[], char *env[])
 	}
 	
 	
-  nvpipe = fopen(nvfile, "rb");
-  
-  if (nvpipe == NULL)
-  {
-    fprintf(stderr, "error opening file '%s'\n", nvfile);
-    exit(EXIT_FAILURE);
-  }
+	nvpipe = fopen(nvfile, "rb");
+	
+	if (nvpipe == NULL)
+	{
+		fprintf(stderr, "error opening file '%s'\n", nvfile);
+		exit(EXIT_FAILURE);
+	}
 	
 	if (read_conf(nvpipe, &nvconf) != 0)
 	{
@@ -776,15 +776,15 @@ int main(int argc, char *argv[], char *env[])
 	}
 	
 
-  nvpipe = fopen(nvfile, "r+b");
+	nvpipe = fopen(nvfile, "r+b");
 
-  if (nvpipe == NULL)
-  {
-    fprintf(stderr, "error opening file '%s'\n", nvfile);
-    exit(EXIT_FAILURE);
-  }
+	if (nvpipe == NULL)
+	{
+		fprintf(stderr, "error opening file '%s'\n", nvfile);
+		exit(EXIT_FAILURE);
+	}
 	
-  
+	
 	if (action_read)
 	{
 		if ((action_conf || action_analyze) && gpxfile == NULL)
@@ -1187,14 +1187,14 @@ int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 
 struct trackpoint *read_track(FILE *nvpipe)
 {
-  struct trackpoint *start = NULL;
-  struct trackpoint *ptr = NULL;
-  struct trackpoint point;
-  
-  // Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
-  fseek(nvpipe, 0x00001000, SEEK_SET);
-  
-  while (read_point(nvpipe, &point) == 0)
+	struct trackpoint *start = NULL;
+	struct trackpoint *ptr = NULL;
+	struct trackpoint point;
+	
+	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
+	fseek(nvpipe, 0x00001000, SEEK_SET);
+	
+	while (read_point(nvpipe, &point) == 0)
 	{
 		if (start == NULL)
 		{
@@ -1215,12 +1215,12 @@ struct trackpoint *read_track(FILE *nvpipe)
 
 void print_track(FILE *output, struct trackpoint *start)
 {
-  int minlat = 900000000;
-  int maxlat = -900000000;
-  int minlon = 1800000000;
-  int maxlon = -1800000000;
-  int trackcount;
-  int wptcount;
+	int minlat = 900000000;
+	int maxlat = -900000000;
+	int minlon = 1800000000;
+	int maxlon = -1800000000;
+	int trackcount;
+	int wptcount;
 	struct trackpoint *ptr;
 	
 	ptr = start;
@@ -1233,94 +1233,94 @@ void print_track(FILE *output, struct trackpoint *start)
 		ptr = ptr->next;
 	}
 	
-  fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-  fprintf(output, "<gpx version=\"1.1\" creator=\"naviread 0.2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
+	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	fprintf(output, "<gpx version=\"1.1\" creator=\"naviread 0.2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
 	
 	fprintf(output, "<metadata>\n");
 	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
 	fprintf(output, "</metadata>\n");
-  
 	
-  wptcount = 0;
-  ptr = start;
 	
-  while (ptr)
-  {
-    if (ptr->type & 2)
-    {
+	wptcount = 0;
+	ptr = start;
+	
+	while (ptr)
+	{
+		if (ptr->type & 2)
+		{
 			fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 			fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
 			fprintf(output, "<time>%d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
 			fprintf(output, "<name>Push Log Point %d</name>\n", ++wptcount);
 			fprintf(output, "</wpt>\n");
-    }
+		}
 		
-    ptr = ptr->next;
-  }
+		ptr = ptr->next;
+	}
 	
 	
-  trackcount = 0;
-  ptr = start;
+	trackcount = 0;
+	ptr = start;
 	
-  while (ptr)
-  {
-    if (ptr->type & 1)
-    {
-      // ggf. alten Track abschließen
-      if (trackcount > 0)
-      {
-        fprintf(output, "</trkseg>\n");
-        fprintf(output, "</trk>\n");
-      }
+	while (ptr)
+	{
+		if (ptr->type & 1)
+		{
+			// ggf. alten Track abschließen
+			if (trackcount > 0)
+			{
+				fprintf(output, "</trkseg>\n");
+				fprintf(output, "</trk>\n");
+			}
 			
-      // neuen Track starten
-      ++trackcount;
-      fprintf(output, "<trk>\n");
-      fprintf(output, "<name>Track %d</name>\n", trackcount);
-      fprintf(output, "<number>%d</number>\n", trackcount);
-      fprintf(output, "<trkseg>\n");
-    }
-    
-    // Trackpunkt ausgeben
-    fprintf(output, "<trkpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
-    fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
+			// neuen Track starten
+			++trackcount;
+			fprintf(output, "<trk>\n");
+			fprintf(output, "<name>Track %d</name>\n", trackcount);
+			fprintf(output, "<number>%d</number>\n", trackcount);
+			fprintf(output, "<trkseg>\n");
+		}
+
+		// Trackpunkt ausgeben
+		fprintf(output, "<trkpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
+		fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
 		fprintf(output, "<time>%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
-    fprintf(output, "</trkpt>\n");
-    
-    ptr = ptr->next;
-  }
+		fprintf(output, "</trkpt>\n");
+		
+		ptr = ptr->next;
+	}
 	
-  // ggf. alten Track abschließen
-  if (trackcount > 0)
-  {
-    fprintf(output, "</trkseg>\n");
-    fprintf(output, "</trk>\n");
-  }
+	// ggf. alten Track abschließen
+	if (trackcount > 0)
+	{
+		fprintf(output, "</trkseg>\n");
+		fprintf(output, "</trk>\n");
+	}
 	
-  fprintf(output, "</gpx>\n");
+	fprintf(output, "</gpx>\n");
 }
 
 int read_point(FILE *file, struct trackpoint *point)
 {
-  if (point == NULL) return -1;
-  
-  if (fread(&point->type,      1, 1, file) != 1) return -1;
-  if (fread(&point->unknown,   1, 1, file) != 1) return -1;
-  if (fread(&point->time,      4, 1, file) != 1) return -1;
-  if (fread(&point->latitude,  4, 1, file) != 1) return -1;
-  if (fread(&point->longitude, 4, 1, file) != 1) return -1;
-  if (fread(&point->height,    2, 1, file) != 1) return -1;
-  
-  if (point->type != 255)
-  {
-    // Auslesen erfolgreich
-    return 0;
-  }
-  else
-  {
-    // Auslesen fehlgeschlagen (ungültiger Datensatz)
-    return -1;
-  }
+	if (point == NULL) return -1;
+	
+	if (fread(&point->type,      1, 1, file) != 1) return -1;
+	if (fread(&point->unknown,   1, 1, file) != 1) return -1;
+	if (fread(&point->time,      4, 1, file) != 1) return -1;
+	if (fread(&point->latitude,  4, 1, file) != 1) return -1;
+	if (fread(&point->longitude, 4, 1, file) != 1) return -1;
+	if (fread(&point->height,    2, 1, file) != 1) return -1;
+	
+	if (point->type != 255)
+	{
+		// Auslesen erfolgreich
+		return 0;
+	}
+	else
+	{
+		// Auslesen fehlgeschlagen (ungültiger Datensatz)
+		return -1;
+	}
 }
 
 
@@ -1362,8 +1362,8 @@ int analyze(FILE *nvpipe)
 	if (fread(&value, 2, 1, nvpipe) != 1) return -1;
 	if (value != 0 && value != 1 && value != 2 && value != 3 && value != 4 && value != 5) printf("unknown value '%u' at offset 0x000003FE\n", value);
 
-  fseek(nvpipe, 0x1000, SEEK_SET);
-  while (read_point(nvpipe, &point) == 0)
+	fseek(nvpipe, 0x1000, SEEK_SET);
+	while (read_point(nvpipe, &point) == 0)
 	{
 		showinfo = 0;
 		
