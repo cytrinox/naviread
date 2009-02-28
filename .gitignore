@@ -1,0 +1,15 @@
+*~
+*.o
+*.in
+*.tar.gz
+Makefile
+aclocal.m4
+autom4te.cache/
+autoscan.log
+config.h
+config.log
+config.status
+configure
+configure.scan
+src/.deps/
+stamp-h1
