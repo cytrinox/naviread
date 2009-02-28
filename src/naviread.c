@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <getopt.h>
+#include "config.h"
 #include "naviread.h"
 
 
@@ -1234,7 +1235,7 @@ void print_track(FILE *output, struct trackpoint *start)
 	}
 	
 	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	fprintf(output, "<gpx version=\"1.1\" creator=\"naviread 0.2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
+	fprintf(output, "<gpx version=\"1.1\" creator=\"" PACKAGE_STRING "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
 	
 	fprintf(output, "<metadata>\n");
 	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
