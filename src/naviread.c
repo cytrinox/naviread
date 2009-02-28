@@ -156,11 +156,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_CLEAR_MEMORY:
-				if (optarg != NULL && ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "no") || !stricmp(optarg, "off")))
+				if (optarg != NULL && ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "no") || !strcasecmp(optarg, "off")))
 				{
 					nvconf.clear_memory = CLEAR_MEMORY_NO;
 				}
-				else if (optarg == NULL || (*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
+				else if (optarg == NULL || (*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
 				{
 					nvconf.clear_memory = CLEAR_MEMORY_YES;
 				}
@@ -177,11 +177,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_SYSTEM_UNIT:
-				if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !stricmp(optarg, "metric"))
+				if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !strcasecmp(optarg, "metric"))
 				{
 					nvconf.system_unit = SYSTEM_UNIT_METRIC;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'i' || *optarg == 'I')) || !stricmp(optarg, "imperial"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'i' || *optarg == 'I')) || !strcasecmp(optarg, "imperial"))
 				{
 					nvconf.system_unit = SYSTEM_UNIT_IMPERIAL;
 				}
@@ -282,11 +282,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_SHAKE_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "off"))
+				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
 				{
 					nvconf.shake_mode = SHAKE_MODE_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
+				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
 				{
 					nvconf.shake_mode = SHAKE_MODE_ON;
 				}
@@ -322,19 +322,19 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_LOG_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == 'w' || *optarg == 'W')) || !stricmp(optarg, "walk"))
+				if ((*(optarg+1) == 0 && (*optarg == 'w' || *optarg == 'W')) || !strcasecmp(optarg, "walk"))
 				{
 					nvconf.log_mode = LOG_MODE_WALK;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'b' || *optarg == 'B')) || !stricmp(optarg, "bicycle"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'b' || *optarg == 'B')) || !strcasecmp(optarg, "bicycle"))
 				{
 					nvconf.log_mode = LOG_MODE_BICYCLE;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'c' || *optarg == 'C')) || !stricmp(optarg, "car"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'c' || *optarg == 'C')) || !strcasecmp(optarg, "car"))
 				{
 					nvconf.log_mode = LOG_MODE_CAR;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'u' || *optarg == 'U')) || !stricmp(optarg, "user"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'u' || *optarg == 'U')) || !strcasecmp(optarg, "user"))
 				{
 					nvconf.log_mode = LOG_MODE_USER;
 				}
@@ -363,23 +363,23 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_USERDEFINED_LOG_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == 't' || *optarg == 'T')) || !stricmp(optarg, "time"))
+				if ((*(optarg+1) == 0 && (*optarg == 't' || *optarg == 'T')) || !strcasecmp(optarg, "time"))
 				{
 					nvconf.userdefined_log_mode = USERDEFINED_LOG_MODE_TIME;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "distance"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "distance"))
 				{
 					nvconf.userdefined_log_mode = USERDEFINED_LOG_MODE_DISTANCE;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'h' || *optarg == 'H')) || !stricmp(optarg, "heading"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'h' || *optarg == 'H')) || !strcasecmp(optarg, "heading"))
 				{
 					nvconf.userdefined_log_mode = USERDEFINED_LOG_MODE_HEADING;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 's' || *optarg == 'S')) || !stricmp(optarg, "speed"))
+				else if ((*(optarg+1) == 0 && (*optarg == 's' || *optarg == 'S')) || !strcasecmp(optarg, "speed"))
 				{
 					nvconf.userdefined_log_mode = USERDEFINED_LOG_MODE_SPEED;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !stricmp(optarg, "mixed"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !strcasecmp(optarg, "mixed"))
 				{
 					nvconf.userdefined_log_mode = USERDEFINED_LOG_MODE_MIXED;
 				}
@@ -572,27 +572,27 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_GPS_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == 'h' || *optarg == 'H')) || !stricmp(optarg, "high"))
+				if ((*(optarg+1) == 0 && (*optarg == 'h' || *optarg == 'H')) || !strcasecmp(optarg, "high"))
 				{
 					nvconf.gps_mode = GPS_MODE_HIGH_PRECISION;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !stricmp(optarg, "middle"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !strcasecmp(optarg, "middle"))
 				{
 					nvconf.gps_mode = GPS_MODE_MIDDLE_PRECISION;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "default"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "default"))
 				{
 					nvconf.gps_mode = GPS_MODE_DEFAULT;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'l' || *optarg == 'L')) || !stricmp(optarg, "low"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'l' || *optarg == 'L')) || !strcasecmp(optarg, "low"))
 				{
 					nvconf.gps_mode = GPS_MODE_MIDDLE_TIME;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'f' || *optarg == 'F')) || !stricmp(optarg, "fast"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'f' || *optarg == 'F')) || !strcasecmp(optarg, "fast"))
 				{
 					nvconf.gps_mode = GPS_MODE_FAST_TIME;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == 'u' || *optarg == 'U')) || !stricmp(optarg, "user"))
+				else if ((*(optarg+1) == 0 && (*optarg == 'u' || *optarg == 'U')) || !strcasecmp(optarg, "user"))
 				{
 					nvconf.gps_mode = GPS_MODE_USER;
 				}
@@ -605,11 +605,11 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_SBAS:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !stricmp(optarg, "off"))
+				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
 				{
 					nvconf.sbas = SBAS_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !stricmp(optarg, "on"))
+				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
 				{
 					nvconf.sbas = SBAS_ON;
 				}
@@ -630,15 +630,15 @@ int main(int argc, char *argv[], char *env[])
 				break;
 			
 			case KEY_SET_FIX_MODE:
-				if (!stricmp(optarg, "2d"))
+				if (!strcasecmp(optarg, "2d"))
 				{
 					nvconf.fix_mode = FIX_MODE_2D;
 				}
-				else if (!stricmp(optarg, "2d3d") || !stricmp(optarg, "auto"))
+				else if (!strcasecmp(optarg, "2d3d") || !strcasecmp(optarg, "auto"))
 				{
 					nvconf.fix_mode = FIX_MODE_2D3D;
 				}
-				else if (!stricmp(optarg, "3d"))
+				else if (!strcasecmp(optarg, "3d"))
 				{
 					nvconf.fix_mode = FIX_MODE_3D;
 				}
