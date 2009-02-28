@@ -1,0 +1,2 @@
+bin_PROGRAMS=naviread
+naviread_SOURCES=naviread.c
