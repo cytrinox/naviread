@@ -20,7 +20,7 @@ AC_CHECK_HEADERS([stdlib.h string.h])
 
 # Checks for library functions.
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([memset strchr])
+AC_CHECK_FUNCS([memset strchr strcasecmp stricmp])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
