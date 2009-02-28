@@ -19,6 +19,14 @@
 #ifndef NAVIREAD_H_
 #define NAVIREAD_H_
 
+
+#ifndef HAVE_STRCASECMP
+#ifdef HAVE_STRICMP
+#define strcasecmp stricmp
+#endif
+#endif
+
+
 #define CLEAR_MEMORY_NO 0x00
 #define CLEAR_MEMORY_YES 0x01
 #define SYSTEM_UNIT_METRIC 0x00
