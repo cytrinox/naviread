@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.61)
 AC_INIT(naviread, 0.2.1, devel.20.webmeister@spamgourmet.com)
-AM_INIT_AUTOMAKE(naviread, 0.2.1)
+AM_INIT_AUTOMAKE([-Wall -Werror])
 AC_CONFIG_SRCDIR([src/naviread.c])
 AC_CONFIG_HEADER([config.h])
 
