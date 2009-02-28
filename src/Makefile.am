@@ -1,2 +1,2 @@
 bin_PROGRAMS=naviread
-naviread_SOURCES=naviread.c
+naviread_SOURCES=naviread.c naviread.h
