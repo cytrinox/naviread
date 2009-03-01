@@ -2,6 +2,7 @@
 *.o
 *.in
 *.tar.gz
+*.zip
 Makefile
 aclocal.m4
 autom4te.cache/
