@@ -1,0 +1,17 @@
+2009-03-01: v0.3.0
+- Bereitstellung eines configure-Skripts/Makefiles mittels der GNU Autotools (fixes #2)
+- Verwendung von strcasecmp() oder stricmp() für höhere Kompatibilität mit verschiedenen Compilern (fixes #1)
+- neue Projektwebsite unter https://dev.lindon.de/projects/show/naviread
+
+2008-08-17: v0.2.1
+- Leeren des Speichers
+
+2008-06-15: v0.2.0
+- Ausgabe von Push-Log-Punkten
+- Ausgabe der Metadaten "bounds" für die minimalen und maximalen Koordinatenwerte
+- höhere Genauigkeit der Koordinaten (7 statt 6 Nachkommastellen)
+- Unterstützung für negative Höhen (und vermutlich auch südliche/westliche Koordinaten)
+
+2008-05-22: v0.1.0
+- rudimentäres Auslesen der Tracks als GPX
+- Ausgabe der aktuellen Einstellungen
