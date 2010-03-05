@@ -90,21 +90,21 @@ int main(int argc, char *argv[], char *env[])
 	FILE *nvpipe;
 	FILE *gpxpipe;
 	struct naviconf nvconf;
-	
-	
+
+
 	char action_read = 0;
 	char action_conf = 0;
 	char action_analyze = 0;
 	char action_help = 0;
-	
-	
+
+
 	opterr = 1;
 	while ((option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index)) != -1)
 	{
 		if (option == '?') exit(EXIT_FAILURE);
 	}
-	
-	
+
+
 	if (optind < argc)
 	{
 		nvfile = argv[optind++];
@@ -114,47 +114,47 @@ int main(int argc, char *argv[], char *env[])
 		usage(argv[0]);
 		exit(EXIT_FAILURE);
 	}
-	
-	
+
+
 	nvpipe = fopen(nvfile, "rb");
-	
+
 	if (nvpipe == NULL)
 	{
 		fprintf(stderr, "error opening file '%s'\n", nvfile);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	if (read_conf(nvpipe, &nvconf) != 0)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	fclose(nvpipe);
-	
-	
+
+
 	opterr = 1;
 	optind = 0;
 	while (1)
 	{
 		option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index);
 		if (option == -1) break;
-		
+
 		switch (option)
 		{
 			case KEY_READ:
 				action_read = 1;
 				if (optarg != NULL) gpxfile = optarg;
 				break;
-			
+
 			case KEY_CONF:
 				action_conf = 1;
 				break;
-			
+
 			case KEY_ANALYZE:
 				action_analyze = 1;
 				break;
-			
+
 			case KEY_CLEAR_MEMORY:
 				if (optarg != NULL && ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "no") || !strcasecmp(optarg, "off")))
 				{
@@ -171,11 +171,11 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_HELP:
 				action_help = 1;
 				break;
-			
+
 			case KEY_SET_SYSTEM_UNIT:
 				if ((*(optarg+1) == 0 && (*optarg == 'm' || *optarg == 'M')) || !strcasecmp(optarg, "metric"))
 				{
@@ -192,15 +192,15 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_METRIC_SYSTEM:
 				nvconf.system_unit = SYSTEM_UNIT_METRIC;
 				break;
-			
+
 			case KEY_SET_IMPERIAL_SYSTEM:
 				nvconf.system_unit = SYSTEM_UNIT_IMPERIAL;
 				break;
-			
+
 			case KEY_SET_DEVICE_ZONE:
 				if ((pos = strchr(optarg, '.')) || (pos = strchr(optarg, ',')))
 				{
@@ -213,7 +213,7 @@ int main(int argc, char *argv[], char *env[])
 					{
 						while (*(pos++)) *pos = *(pos+1);
 					}
-					
+
 					ivalue = atoi(optarg);
 				}
 
@@ -225,13 +225,13 @@ int main(int argc, char *argv[], char *env[])
 				{
 					hrs = ivalue / 100;
 					mins = ivalue % 100;
-					
+
 					if (mins >= 60)
 					{
 						fprintf(stderr, "error: invalid value '%s' for option '-%c'\n", optarg, option);
 						exit(EXIT_FAILURE);
 					}
-					
+
 					nvconf.device_zone = (int)((hrs + (double)(mins/15)/4)*100);
 				}
 				else
@@ -241,19 +241,19 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_PASSWORD:
 				strncpy(nvconf.password, optarg, 10);
 				nvconf.password[10] = 0;
 				break;
-			
+
 			case KEY_UNSET_PASSWORD:
 				nvconf.password[0] = 0;
 				break;
-			
+
 			case KEY_SET_CONTRAST:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 170 && ivalue <= 245)
 				{
 					nvconf.contrast = ivalue;
@@ -265,10 +265,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_BACKLIGHT_TIME:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 5 && ivalue <= 255)
 				{
 					nvconf.backlight_time = ivalue;
@@ -280,7 +280,7 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_SHAKE_MODE:
 				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
 				{
@@ -297,18 +297,18 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_ENABLE_SHAKE_MODE:
 				nvconf.shake_mode = SHAKE_MODE_ON;
 				break;
-			
+
 			case KEY_DISABLE_SHAKE_MODE:
 				nvconf.shake_mode = SHAKE_MODE_OFF;
 				break;
-			
+
 			case KEY_SET_SHAKE_MODE_TIME:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 120)
 				{
 					nvconf.shake_mode_time = ivalue;
@@ -320,7 +320,7 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_LOG_MODE:
 				if ((*(optarg+1) == 0 && (*optarg == 'w' || *optarg == 'W')) || !strcasecmp(optarg, "walk"))
 				{
@@ -345,23 +345,23 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_LOG_MODE_WALK:
 				nvconf.log_mode = LOG_MODE_WALK;
 				break;
-			
+
 			case KEY_LOG_MODE_BICYCLE:
 				nvconf.log_mode = LOG_MODE_BICYCLE;
 				break;
-			
+
 			case KEY_LOG_MODE_CAR:
 				nvconf.log_mode = LOG_MODE_CAR;
 				break;
-			
+
 			case KEY_LOG_MODE_USER:
 				nvconf.log_mode = LOG_MODE_USER;
 				break;
-			
+
 			case KEY_SET_USERDEFINED_LOG_MODE:
 				if ((*(optarg+1) == 0 && (*optarg == 't' || *optarg == 'T')) || !strcasecmp(optarg, "time"))
 				{
@@ -390,10 +390,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_TIME_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 65535)
 				{
 					nvconf.userdefined_time_interval = ivalue;
@@ -405,10 +405,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_DISTANCE_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 5000)
 				{
 					nvconf.userdefined_distance_interval = ivalue;
@@ -420,10 +420,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_HEADING_CHANGE:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 179)
 				{
 					nvconf.userdefined_heading_change = ivalue;
@@ -435,10 +435,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_HIGHEST_SPEED:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 5 && ivalue <= 2000)
 				{
 					nvconf.userdefined_highest_speed = ivalue;
@@ -450,10 +450,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_HIGH_SPEED:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 4 && ivalue <= 1999)
 				{
 					nvconf.userdefined_high_speed = ivalue;
@@ -465,10 +465,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_MIDDLE_SPEED:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 3 && ivalue <= 1998)
 				{
 					nvconf.userdefined_middle_speed = ivalue;
@@ -480,10 +480,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_LOW_SPEED:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 2 && ivalue <= 1997)
 				{
 					nvconf.userdefined_low_speed = ivalue;
@@ -495,10 +495,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_LOWEST_SPEED:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 1996)
 				{
 					nvconf.userdefined_lowest_speed = ivalue;
@@ -510,10 +510,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_HIGHEST_SPEED_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 3600)
 				{
 					nvconf.userdefined_highest_speed_interval = ivalue;
@@ -525,10 +525,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_HIGH_SPEED_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 3600)
 				{
 					nvconf.userdefined_high_speed_interval = ivalue;
@@ -540,10 +540,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_MIDDLE_SPEED_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 3600)
 				{
 					nvconf.userdefined_middle_speed_interval = ivalue;
@@ -555,10 +555,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_USERDEFINED_LOW_SPEED_INTERVAL:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 1 && ivalue <= 3600)
 				{
 					nvconf.userdefined_low_speed_interval = ivalue;
@@ -570,7 +570,7 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_GPS_MODE:
 				if ((*(optarg+1) == 0 && (*optarg == 'h' || *optarg == 'H')) || !strcasecmp(optarg, "high"))
 				{
@@ -603,7 +603,7 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_SBAS:
 				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
 				{
@@ -620,15 +620,15 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_ENABLE_SBAS:
 				nvconf.sbas = SBAS_ON;
 				break;
-			
+
 			case KEY_DISABLE_SBAS:
 				nvconf.sbas = SBAS_OFF;
 				break;
-			
+
 			case KEY_SET_FIX_MODE:
 				if (!strcasecmp(optarg, "2d"))
 				{
@@ -649,10 +649,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_2D_FIX_ALTITUDE:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 0 && ivalue <= 1800000)
 				{
 					nvconf.fix_altitude = ivalue;
@@ -664,10 +664,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_INITIAL_MIN_STRENGTH:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 0 && ivalue <= 64)
 				{
 					nvconf.initial_min_strength = ivalue;
@@ -679,10 +679,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_NAVIGATION_MIN_STRENGTH:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 0 && ivalue <= 64)
 				{
 					nvconf.navigation_min_strength = ivalue;
@@ -694,10 +694,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_P_ACCURACY_MASK:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 0 && ivalue <= 65535)
 				{
 					nvconf.p_accuracy_mask = ivalue;
@@ -709,10 +709,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_T_ACCURACY_MASK:
 				ivalue = atoi(optarg);
-				
+
 				if (ivalue >= 0 && ivalue <= 65535)
 				{
 					nvconf.t_accuracy_mask = ivalue;
@@ -724,10 +724,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_PDOP_MASK:
 				ivalue = (int)(atof(optarg)*10);
-				
+
 				if (ivalue >= 0 && ivalue <= 10000)
 				{
 					nvconf.pdop_mask = ivalue;
@@ -739,10 +739,10 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
+
 			case KEY_SET_TDOP_MASK:
 				ivalue = (int)(atof(optarg)*10);
-				
+
 				if (ivalue >= 0 && ivalue <= 10000)
 				{
 					nvconf.tdop_mask = ivalue;
@@ -754,8 +754,8 @@ int main(int argc, char *argv[], char *env[])
 					exit(EXIT_FAILURE);
 				}
 				break;
-			
-				
+
+
 			// undefinierte Optionen
 			default:
 				fprintf(stderr, "%s: undefined option -- %c\n", argv[0], option);
@@ -763,19 +763,19 @@ int main(int argc, char *argv[], char *env[])
 				break;
 		}
 	}
-	
-	
+
+
 	if (action_help)
 	{
 		usage(argv[0]);
 		exit(EXIT_SUCCESS);
 	}
-	
+
 	if (action_conf)
 	{
 		print_conf(&nvconf);
 	}
-	
+
 
 	nvpipe = fopen(nvfile, "r+b");
 
@@ -784,8 +784,8 @@ int main(int argc, char *argv[], char *env[])
 		fprintf(stderr, "error opening file '%s'\n", nvfile);
 		exit(EXIT_FAILURE);
 	}
-	
-	
+
+
 	if (action_read)
 	{
 		if ((action_conf || action_analyze) && gpxfile == NULL)
@@ -797,15 +797,15 @@ int main(int argc, char *argv[], char *env[])
 			if (gpxfile != NULL)
 			{
 				gpxpipe = fopen(gpxfile, "w");
-				
+
 				if (gpxpipe == NULL)
 				{
 					fprintf(stderr, "error opening file '%s'\n", gpxfile);
 					exit(EXIT_FAILURE);
 				}
-				
+
 				print_track(gpxpipe, read_track(nvpipe));
-				
+
 				fclose(gpxpipe);
 			}
 			else
@@ -814,7 +814,7 @@ int main(int argc, char *argv[], char *env[])
 			}
 		}
 	}
-	
+
 	if (action_analyze)
 	{
 		if (analyze(nvpipe) != 0)
@@ -823,17 +823,17 @@ int main(int argc, char *argv[], char *env[])
 			exit(EXIT_FAILURE);
 		}
 	}
-	
-	
+
+
 	if (write_conf(nvpipe, &nvconf) != 0)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
 		exit(EXIT_FAILURE);
 	}
-	
+
 	fclose(nvpipe);
-	
-	
+
+
 	return 0;
 }
 
@@ -901,7 +901,7 @@ int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 {
 	unsigned char *ptr;
 	int i;
-	
+
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
@@ -970,7 +970,7 @@ int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 	if (fread(&nvconf->sbas, 2, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->gps_mode, 2, 1, nvpipe) != 1) return -1;
-	
+
 	i = 0;
 	ptr = nvconf->password;
 	while (*(ptr++) != 0xEE && i++ < 10);
@@ -984,7 +984,7 @@ void print_conf(struct naviconf *nvconf)
 {
 	puts("Geräteeinstellungen");
 	puts("-------------------");
-	
+
 	printf("Maßeinheiten: ");
 	switch (nvconf->system_unit)
 	{
@@ -1005,7 +1005,7 @@ void print_conf(struct naviconf *nvconf)
 		case SHAKE_MODE_ON: printf("an\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("Shake-Modus-Zeit: %dm\n", nvconf->shake_mode_time);
 
 	printf("Speicher leeren: ");
@@ -1020,7 +1020,7 @@ void print_conf(struct naviconf *nvconf)
 	puts("");
 	puts("Logeinstellungen");
 	puts("----------------");
-	
+
 	printf("Log-Modus: ");
 	switch (nvconf->log_mode)
 	{
@@ -1030,7 +1030,7 @@ void print_conf(struct naviconf *nvconf)
 		case LOG_MODE_USER: printf("benutzerdefiniert\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("benutzerdef. Log-Modus: ");
 	switch (nvconf->userdefined_log_mode)
 	{
@@ -1041,7 +1041,7 @@ void print_conf(struct naviconf *nvconf)
 		case USERDEFINED_LOG_MODE_MIXED: printf("gemischt (Zeit und Entfernung)\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("Zeitintervall: %ds\n", nvconf->userdefined_time_interval);
 	printf("Entfernungsintervall: %dm\n", nvconf->userdefined_distance_interval);
 	printf("Richtungswechsel: %d°\n", nvconf->userdefined_heading_change);
@@ -1054,12 +1054,12 @@ void print_conf(struct naviconf *nvconf)
 	printf("Logintervall mittlere-hohe Geschwindigkeit: %ds\n", nvconf->userdefined_high_speed_interval);
 	printf("Logintervall niedrige-mittlere Geschwindigkeit: %ds\n", nvconf->userdefined_middle_speed_interval);
 	printf("Logintervall niedrigste-niedrige Geschwindigkeit: %ds\n", nvconf->userdefined_low_speed_interval);
-	
-	
+
+
 	puts("");
 	puts("GPS-Einstellungen");
 	puts("-----------------");
-	
+
 	printf("GPS-Modus: ");
 	switch (nvconf->gps_mode)
 	{
@@ -1071,7 +1071,7 @@ void print_conf(struct naviconf *nvconf)
 		case GPS_MODE_USER: printf("benutzerdefiniert\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("SBAS: ");
 	switch (nvconf->sbas)
 	{
@@ -1079,7 +1079,7 @@ void print_conf(struct naviconf *nvconf)
 		case SBAS_ON: printf("an\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("Fix-Modus: ");
 	switch (nvconf->fix_mode)
 	{
@@ -1088,7 +1088,7 @@ void print_conf(struct naviconf *nvconf)
 		case FIX_MODE_3D: printf("nur 3D\n"); break;
 		default: printf("unbekannt\n"); break;
 	}
-	
+
 	printf("2D-Höhe: %dcm\n", nvconf->fix_altitude);
 	printf("initiale minimale SVs: %d\n", nvconf->initial_min_svs);
 	printf("initiale Signalmindeststärke: %ddBHz\n", nvconf->initial_min_strength);
@@ -1105,7 +1105,7 @@ int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 {
 	unsigned char *ptr;
 	int i;
-	
+
 	memset(nvconf->password+strlen(nvconf->password), 0xEE, 10-strlen(nvconf->password));
 
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
@@ -1176,7 +1176,7 @@ int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 	if (fwrite(&nvconf->sbas, 1, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
 	if (fwrite(&nvconf->gps_mode, 1, 1, nvpipe) != 1) return -1;
-	
+
 	i = 0;
 	ptr = nvconf->password;
 	while (*(ptr++) != 0xEE && i++ < 10);
@@ -1191,10 +1191,10 @@ struct trackpoint *read_track(FILE *nvpipe)
 	struct trackpoint *start = NULL;
 	struct trackpoint *ptr = NULL;
 	struct trackpoint point;
-	
+
 	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
 	fseek(nvpipe, 0x00001000, SEEK_SET);
-	
+
 	while (read_point(nvpipe, &point) == 0)
 	{
 		if (start == NULL)
@@ -1209,7 +1209,7 @@ struct trackpoint *read_track(FILE *nvpipe)
 		memcpy(ptr, &point, sizeof(struct trackpoint));
 	}
 	if (ptr) ptr->next = NULL;
-	
+
 	return start;
 }
 
@@ -1223,7 +1223,7 @@ void print_track(FILE *output, struct trackpoint *start)
 	int trackcount;
 	int wptcount;
 	struct trackpoint *ptr;
-	
+
 	ptr = start;
 	while (ptr)
 	{
@@ -1233,18 +1233,18 @@ void print_track(FILE *output, struct trackpoint *start)
 		if (ptr->longitude > maxlon) maxlon = ptr->longitude;
 		ptr = ptr->next;
 	}
-	
+
 	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	fprintf(output, "<gpx version=\"1.1\" creator=\"" PACKAGE_STRING "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
-	
+
 	fprintf(output, "<metadata>\n");
 	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
 	fprintf(output, "</metadata>\n");
-	
-	
+
+
 	wptcount = 0;
 	ptr = start;
-	
+
 	while (ptr)
 	{
 		if (ptr->type & 2)
@@ -1255,14 +1255,14 @@ void print_track(FILE *output, struct trackpoint *start)
 			fprintf(output, "<name>Push Log Point %d</name>\n", ++wptcount);
 			fprintf(output, "</wpt>\n");
 		}
-		
+
 		ptr = ptr->next;
 	}
-	
-	
+
+
 	trackcount = 0;
 	ptr = start;
-	
+
 	while (ptr)
 	{
 		if (ptr->type & 1)
@@ -1273,7 +1273,7 @@ void print_track(FILE *output, struct trackpoint *start)
 				fprintf(output, "</trkseg>\n");
 				fprintf(output, "</trk>\n");
 			}
-			
+
 			// neuen Track starten
 			++trackcount;
 			fprintf(output, "<trk>\n");
@@ -1287,31 +1287,31 @@ void print_track(FILE *output, struct trackpoint *start)
 		fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
 		fprintf(output, "<time>%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
 		fprintf(output, "</trkpt>\n");
-		
+
 		ptr = ptr->next;
 	}
-	
+
 	// ggf. alten Track abschließen
 	if (trackcount > 0)
 	{
 		fprintf(output, "</trkseg>\n");
 		fprintf(output, "</trk>\n");
 	}
-	
+
 	fprintf(output, "</gpx>\n");
 }
 
 int read_point(FILE *file, struct trackpoint *point)
 {
 	if (point == NULL) return -1;
-	
+
 	if (fread(&point->type,      1, 1, file) != 1) return -1;
 	if (fread(&point->unknown,   1, 1, file) != 1) return -1;
 	if (fread(&point->time,      4, 1, file) != 1) return -1;
 	if (fread(&point->latitude,  4, 1, file) != 1) return -1;
 	if (fread(&point->longitude, 4, 1, file) != 1) return -1;
 	if (fread(&point->height,    2, 1, file) != 1) return -1;
-	
+
 	if (point->type != 255)
 	{
 		// Auslesen erfolgreich
@@ -1330,7 +1330,7 @@ int analyze(FILE *nvpipe)
 	unsigned short value;
 	struct trackpoint point;
 	char showinfo = 0;
-	
+
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
 	if (value != 1 && value != 2 && value != 3 && value != 4) printf("unknown value '%u' at offset 0x00000000\n", value);
@@ -1367,25 +1367,25 @@ int analyze(FILE *nvpipe)
 	while (read_point(nvpipe, &point) == 0)
 	{
 		showinfo = 0;
-		
+
 		if (point.type & ~7)
 		{
 			printf("unknown value '%u' at offset %#.8lx\n", point.type, ftell(nvpipe)-16);
 			showinfo = 1;
 		}
-		
+
 		if (point.unknown)
 		{
 			printf("unknown value '%u' at offset %#.8lx\n", point.unknown, ftell(nvpipe)-15);
 			showinfo = 1;
 		}
-		
+
 		if (showinfo)
 		{
 			printf("time = %4d-%.2d-%.2dT%.2d:%.2d:%.2dZ\n", 2000+point.time.Y, point.time.m, point.time.d, point.time.h, point.time.i, point.time.s);
 			printf("lat = %.7f, lon = %.7f, alt = %d\n", (double)point.latitude/10000000, (double)point.longitude/10000000, point.height);
 		}
 	}
-	
+
 	return 0;
 }
