@@ -168,6 +168,9 @@ struct trackpoint
 };
 
 
+#define TRACKPOINT_SIZE 16
+
+
 void usage(char *);
 int read_conf(FILE *, struct naviconf *);
 void print_conf(struct naviconf *);
@@ -176,5 +179,7 @@ struct trackpoint *read_track(FILE *);
 void print_track(FILE *, struct trackpoint *);
 int read_point(FILE *, struct trackpoint *);
 int analyze(FILE *);
+struct trackpoint *last_point(struct trackpoint *);
+struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
 
 #endif

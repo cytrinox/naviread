@@ -794,6 +794,9 @@ int main(int argc, char *argv[], char *env[])
 		}
 		else
 		{
+			// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
+			fseek(nvpipe, 0x00001000, SEEK_SET);
+
 			if (gpxfile != NULL)
 			{
 				gpxpipe = fopen(gpxfile, "w");
@@ -1192,9 +1195,6 @@ struct trackpoint *read_track(FILE *nvpipe)
 	struct trackpoint *ptr = NULL;
 	struct trackpoint point;
 
-	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
-	fseek(nvpipe, 0x00001000, SEEK_SET);
-
 	while (read_point(nvpipe, &point) == 0)
 	{
 		if (start == NULL)
@@ -1210,7 +1210,33 @@ struct trackpoint *read_track(FILE *nvpipe)
 	}
 	if (ptr) ptr->next = NULL;
 
+	if (read_has_more(nvpipe))
+	{
+		struct trackpoint *part = read_track(nvpipe);
+		start = track_concat(part, start);
+	}
+
 	return start;
+}
+
+int read_has_more(FILE *nvpipe)
+{
+	struct trackpoint point;
+
+	while (1)
+	{
+		int result = read_point(nvpipe, &point);
+		switch (result)
+		{
+			case 0:
+				fseek(nvpipe, -TRACKPOINT_SIZE, SEEK_CUR);
+				return 1;
+			case -1:
+				break;
+			case -2:
+				return 0;
+		}
+	}
 }
 
 
@@ -1305,12 +1331,12 @@ int read_point(FILE *file, struct trackpoint *point)
 {
 	if (point == NULL) return -1;
 
-	if (fread(&point->type,      1, 1, file) != 1) return -1;
-	if (fread(&point->unknown,   1, 1, file) != 1) return -1;
-	if (fread(&point->time,      4, 1, file) != 1) return -1;
-	if (fread(&point->latitude,  4, 1, file) != 1) return -1;
-	if (fread(&point->longitude, 4, 1, file) != 1) return -1;
-	if (fread(&point->height,    2, 1, file) != 1) return -1;
+	if (fread(&point->type,      1, 1, file) != 1) return -2;
+	if (fread(&point->unknown,   1, 1, file) != 1) return -2;
+	if (fread(&point->time,      4, 1, file) != 1) return -2;
+	if (fread(&point->latitude,  4, 1, file) != 1) return -2;
+	if (fread(&point->longitude, 4, 1, file) != 1) return -2;
+	if (fread(&point->height,    2, 1, file) != 1) return -2;
 
 	if (point->type != 255)
 	{
@@ -1388,4 +1414,29 @@ int analyze(FILE *nvpipe)
 	}
 
 	return 0;
+}
+
+
+struct trackpoint *track_last_point(struct trackpoint *start)
+{
+	if (start)
+	{
+		while (start->next) start = start->next;
+	}
+
+	return start;
+}
+
+struct trackpoint *track_concat(struct trackpoint *first, struct trackpoint *second)
+{
+	struct trackpoint *last = track_last_point(first);
+	if (last)
+	{
+		last->next = second;
+		return first;
+	}
+	else
+	{
+		return second;
+	}
 }
