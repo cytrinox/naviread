@@ -1289,6 +1289,9 @@ void print_track(FILE *output, struct trackpoint *start)
 	trackcount = 0;
 	ptr = start;
 
+	// unvollständigen Track überspringen
+	while (ptr && !(ptr->type & 1)) ptr = ptr->next;
+
 	while (ptr)
 	{
 		if (ptr->type & 1)
