@@ -1306,7 +1306,7 @@ void print_track(FILE *output, struct trackpoint *start)
 			// neuen Track starten
 			++trackcount;
 			fprintf(output, "<trk>\n");
-			fprintf(output, "<name>Track %d</name>\n", trackcount);
+			fprintf(output, "<name>%4d-%.2d-%.2d %.2d-%.2d-%.2d</name>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
 			fprintf(output, "<number>%d</number>\n", trackcount);
 			fprintf(output, "<trkseg>\n");
 		}
