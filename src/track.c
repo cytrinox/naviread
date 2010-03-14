@@ -20,26 +20,26 @@
 #include "track.h"
 
 
-int trackpoint_read(FILE *file, struct trackpoint *point)
+enum result trackpoint_read(FILE *file, struct trackpoint *point)
 {
 	if (point == NULL) return -1;
 
-	if (fread(&point->type,      1, 1, file) != 1) return -2;
-	if (fread(&point->unknown,   1, 1, file) != 1) return -2;
-	if (fread(&point->time,      4, 1, file) != 1) return -2;
-	if (fread(&point->latitude,  4, 1, file) != 1) return -2;
-	if (fread(&point->longitude, 4, 1, file) != 1) return -2;
-	if (fread(&point->height,    2, 1, file) != 1) return -2;
+	if (fread(&point->type,      1, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->unknown,   1, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->time,      4, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->latitude,  4, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->longitude, 4, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->height,    2, 1, file) != 1) return RESULT_ERROR;
 
 	if (point->type != TRACKPOINT_TYPE_EMPTY)
 	{
 		// Auslesen erfolgreich
-		return 0;
+		return RESULT_OK;
 	}
 	else
 	{
 		// Auslesen fehlgeschlagen (ungültiger Datensatz)
-		return -1;
+		return RESULT_INVALID;
 	}
 }
 
@@ -49,7 +49,7 @@ struct trackpoint *track_read(FILE *nvpipe)
 	struct trackpoint *ptr = NULL;
 	struct trackpoint point;
 
-	while (trackpoint_read(nvpipe, &point) == 0)
+	while (trackpoint_read(nvpipe, &point) == RESULT_OK)
 	{
 		if (start == NULL)
 		{
@@ -84,12 +84,12 @@ char track_find_next(FILE *nvpipe)
 
 		switch (result)
 		{
-			case 0:
+			case RESULT_OK:
 				fseek(nvpipe, -TRACKPOINT_SIZE, SEEK_CUR);
 				return 1;
-			case -1:
+			case RESULT_INVALID:
 				break;
-			case -2:
+			case RESULT_ERROR:
 				return 0;
 		}
 	}

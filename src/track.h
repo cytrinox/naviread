@@ -62,7 +62,14 @@ struct boundingbox
 
 #define TRACKPOINT_SIZE 16
 
-int trackpoint_read(FILE *, struct trackpoint *);
+enum result
+{
+	RESULT_OK = 0,
+	RESULT_INVALID = -1,
+	RESULT_ERROR = -2,
+};
+
+enum result trackpoint_read(FILE *, struct trackpoint *);
 struct trackpoint *track_read(FILE *);
 char track_find_next(FILE *);
 struct boundingbox track_boundingbox(struct trackpoint *);

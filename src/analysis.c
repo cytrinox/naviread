@@ -58,7 +58,7 @@ int analyze(FILE *nvpipe)
 	if (value != 0 && value != 1 && value != 2 && value != 3 && value != 4 && value != 5) printf("unknown value '%u' at offset 0x000003FE\n", value);
 
 	fseek(nvpipe, 0x1000, SEEK_SET);
-	while (trackpoint_read(nvpipe, &point) == 0)
+	while (trackpoint_read(nvpipe, &point) == RESULT_OK)
 	{
 		showinfo = 0;
 
