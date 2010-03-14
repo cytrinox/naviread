@@ -103,7 +103,7 @@ void print_track(FILE *output, struct trackpoint *start)
 
 	while (ptr)
 	{
-		if (ptr->type & 2)
+		if (ptr->type & TRACKPOINT_TYPE_WAYPOINT)
 		{
 			fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 			fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
@@ -120,11 +120,11 @@ void print_track(FILE *output, struct trackpoint *start)
 	ptr = start;
 
 	// unvollständigen Track überspringen
-	while (ptr && !(ptr->type & 1)) ptr = ptr->next;
+	while (ptr && !(ptr->type & TRACKPOINT_TYPE_NEW_TRACK)) ptr = ptr->next;
 
 	while (ptr)
 	{
-		if (ptr->type & 1)
+		if (ptr->type & TRACKPOINT_TYPE_NEW_TRACK)
 		{
 			// ggf. alten Track abschließen
 			if (trackcount > 0)
@@ -171,7 +171,7 @@ int read_point(FILE *file, struct trackpoint *point)
 	if (fread(&point->longitude, 4, 1, file) != 1) return -2;
 	if (fread(&point->height,    2, 1, file) != 1) return -2;
 
-	if (point->type != 255)
+	if (point->type != TRACKPOINT_TYPE_EMPTY)
 	{
 		// Auslesen erfolgreich
 		return 0;

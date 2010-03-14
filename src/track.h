@@ -42,6 +42,9 @@ struct trackpoint
 	struct trackpoint *next;
 };
 
+#define TRACKPOINT_TYPE_NEW_TRACK 1
+#define TRACKPOINT_TYPE_WAYPOINT 2
+#define TRACKPOINT_TYPE_EMPTY 255
 
 #define TRACKPOINT_SIZE 16
 
