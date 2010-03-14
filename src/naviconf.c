@@ -25,7 +25,7 @@
 #include "configuration.h"
 
 
-int main(int argc, char *argv[], char *env[])
+int main(int argc, char *argv[])
 {
 	static struct option long_options[] =
 	{

@@ -16,14 +16,12 @@
 */
 
 #include <string.h>
+#include <stdlib.h>
 #include "configuration.h"
 
 
 int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 {
-	unsigned char *ptr;
-	int i;
-
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
 	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
@@ -93,8 +91,8 @@ int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
 	if (fread(&nvconf->gps_mode, 2, 1, nvpipe) != 1) return -1;
 
-	i = 0;
-	ptr = nvconf->password;
+	int i = 0;
+	unsigned char *ptr = (unsigned char*)nvconf->password;
 	while (*(ptr++) != 0xEE && i++ < 10);
 	*(ptr-1) = 0;
 
@@ -103,9 +101,6 @@ int read_conf(FILE *nvpipe, struct naviconf *nvconf)
 
 int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 {
-	unsigned char *ptr;
-	int i;
-
 	memset(nvconf->password+strlen(nvconf->password), 0xEE, 10-strlen(nvconf->password));
 
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
@@ -177,8 +172,8 @@ int write_conf(FILE *nvpipe, struct naviconf *nvconf)
 	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
 	if (fwrite(&nvconf->gps_mode, 1, 1, nvpipe) != 1) return -1;
 
-	i = 0;
-	ptr = nvconf->password;
+	int i = 0;
+	unsigned char *ptr = (unsigned char*)nvconf->password;
 	while (*(ptr++) != 0xEE && i++ < 10);
 	*(ptr-1) = 0;
 
