@@ -48,6 +48,14 @@ struct tracklist
 	struct tracklist *next;
 };
 
+struct boundingbox
+{
+	double latitude_min;
+	double latitude_max;
+	double longitude_min;
+	double longitude_max;
+};
+
 #define TRACKPOINT_TYPE_NEW_TRACK 1
 #define TRACKPOINT_TYPE_WAYPOINT 2
 #define TRACKPOINT_TYPE_EMPTY 255
@@ -57,6 +65,7 @@ struct tracklist
 int trackpoint_read(FILE *, struct trackpoint *);
 struct trackpoint *track_read(FILE *);
 char track_find_next(FILE *);
+struct boundingbox track_boundingbox(struct trackpoint *);
 struct trackpoint *track_last_point(struct trackpoint *);
 struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
 struct tracklist *track_split(struct trackpoint *);

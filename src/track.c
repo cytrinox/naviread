@@ -93,6 +93,31 @@ char track_find_next(FILE *nvpipe)
 	}
 }
 
+struct boundingbox track_boundingbox(struct trackpoint *point)
+{
+	int minlat = 900000000;
+	int maxlat = -900000000;
+	int minlon = 1800000000;
+	int maxlon = -1800000000;
+
+	while (point)
+	{
+		if (point->latitude < minlat) minlat = point->latitude;
+		if (point->longitude < minlon) minlon = point->longitude;
+		if (point->latitude > maxlat) maxlat = point->latitude;
+		if (point->longitude > maxlon) maxlon = point->longitude;
+		point = point->next;
+	}
+
+	struct boundingbox result;
+	result.latitude_max = (double)maxlat/10000000;
+	result.latitude_min = (double)minlat/10000000;
+	result.longitude_max = (double)maxlon/10000000;
+	result.longitude_min = (double)minlon/10000000;
+
+	return result;
+}
+
 struct trackpoint *track_last_point(struct trackpoint *start)
 {
 	if (start)
@@ -151,29 +176,16 @@ struct tracklist *track_split(struct trackpoint *track)
 
 void track_print(FILE *output, struct trackpoint *start)
 {
-	int minlat = 900000000;
-	int maxlat = -900000000;
-	int minlon = 1800000000;
-	int maxlon = -1800000000;
 	int trackcount;
 	int wptcount;
 	struct trackpoint *ptr;
 
-	ptr = start;
-	while (ptr)
-	{
-		if (ptr->latitude < minlat) minlat = ptr->latitude;
-		if (ptr->longitude < minlon) minlon = ptr->longitude;
-		if (ptr->latitude > maxlat) maxlat = ptr->latitude;
-		if (ptr->longitude > maxlon) maxlon = ptr->longitude;
-		ptr = ptr->next;
-	}
-
 	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	fprintf(output, "<gpx version=\"1.1\" creator=\"" PACKAGE_STRING "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
 
+	struct boundingbox bounds = track_boundingbox(start);
 	fprintf(output, "<metadata>\n");
-	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", (double)minlat/10000000, (double)minlon/10000000, (double)maxlat/10000000, (double)maxlon/10000000);
+	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", bounds.latitude_min, bounds.longitude_min, bounds.latitude_max, bounds.longitude_max);
 	fprintf(output, "</metadata>\n");
 
 
