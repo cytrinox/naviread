@@ -3,12 +3,13 @@
 
 AC_PREREQ(2.61)
 AC_INIT(naviread, 0.3.0, devel.20.webmeister@spamgourmet.com)
-AM_INIT_AUTOMAKE([-Wall -Werror])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/naviread.c])
 AC_CONFIG_HEADER([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+CFLAGS="$CFLAGS -Wall -Wextra -Werror"
 
 # Checks for libraries.
 

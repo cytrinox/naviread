@@ -50,7 +50,7 @@ struct trackpoint *read_track(FILE *nvpipe)
 	return start;
 }
 
-int read_has_more(FILE *nvpipe)
+char read_has_more(FILE *nvpipe)
 {
 	struct trackpoint point;
 

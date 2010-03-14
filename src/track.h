@@ -49,6 +49,7 @@ struct trackpoint
 #define TRACKPOINT_SIZE 16
 
 struct trackpoint *read_track(FILE *);
+char read_has_more(FILE *);
 void print_track(FILE *, struct trackpoint *);
 int read_point(FILE *, struct trackpoint *);
 struct trackpoint *last_point(struct trackpoint *);
