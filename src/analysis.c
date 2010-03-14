@@ -16,6 +16,7 @@
 */
 
 #include "analysis.h"
+#include "configuration.h"
 #include "track.h"
 
 
@@ -27,35 +28,35 @@ int analyze(FILE *nvpipe)
 
 	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 1 && value != 2 && value != 3 && value != 4) printf("unknown value '%u' at offset 0x00000000\n", value);
+	if (value != LOG_MODE_WALK && value != LOG_MODE_BICYCLE && value != LOG_MODE_CAR && value != LOG_MODE_USER) printf("unknown value '%u' at offset 0x00000000\n", value);
 
 	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 0 && value != 1) printf("unknown value '%u' at offset 0x00000002\n", value);
+	if (value != CLEAR_MEMORY_NO && value != CLEAR_MEMORY_YES) printf("unknown value '%u' at offset 0x00000002\n", value);
 
 	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 0 && value != 1) printf("unknown value '%u' at offset 0x00000006\n", value);
+	if (value != SHAKE_MODE_OFF && value != SHAKE_MODE_ON) printf("unknown value '%u' at offset 0x00000006\n", value);
 
 	if (fseek(nvpipe, 0x000A, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 5 && value != 6 && value != 7 && value != 8 && value != 9) printf("unknown value '%u' at offset 0x0000000A\n", value);
+	if (value != USERDEFINED_LOG_MODE_TIME && value != USERDEFINED_LOG_MODE_DISTANCE && value != USERDEFINED_LOG_MODE_HEADING && value != USERDEFINED_LOG_MODE_SPEED && value != USERDEFINED_LOG_MODE_MIXED) printf("unknown value '%u' at offset 0x0000000A\n", value);
 
 	if (fseek(nvpipe, 0x000E, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 0 && value != 1) printf("unknown value '%u' at offset 0x0000000E\n", value);
+	if (value != SYSTEM_UNIT_METRIC && value != SYSTEM_UNIT_IMPERIAL) printf("unknown value '%u' at offset 0x0000000E\n", value);
 
 	if (fseek(nvpipe, 0x036D, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 1 && value != 2 && value != 3) printf("unknown value '%u' at offset 0x0000036D\n", value);
+	if (value != FIX_MODE_2D && value != FIX_MODE_2D3D && value != FIX_MODE_3D) printf("unknown value '%u' at offset 0x0000036D\n", value);
 
 	if (fseek(nvpipe, 0x0396, SEEK_SET) != 0) return -1;
 	if (fread(&value, 1, 1, nvpipe) != 1) return -1;
-	if (value != 0 && value != 1) printf("unknown value '%u' at offset 0x00000396\n", value);
+	if (value != SBAS_OFF && value != SBAS_ON) printf("unknown value '%u' at offset 0x00000396\n", value);
 
 	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
 	if (fread(&value, 2, 1, nvpipe) != 1) return -1;
-	if (value != 0 && value != 1 && value != 2 && value != 3 && value != 4 && value != 5) printf("unknown value '%u' at offset 0x000003FE\n", value);
+	if (value != GPS_MODE_HIGH_PRECISION && value != GPS_MODE_MIDDLE_PRECISION && value != GPS_MODE_DEFAULT && value != GPS_MODE_MIDDLE_TIME && value != GPS_MODE_FAST_TIME && value != GPS_MODE_USER) printf("unknown value '%u' at offset 0x000003FE\n", value);
 
 	fseek(nvpipe, 0x1000, SEEK_SET);
 	while (trackpoint_read(nvpipe, &point) == RESULT_OK)
