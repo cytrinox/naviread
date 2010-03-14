@@ -21,6 +21,19 @@
 
 #include <stdio.h>
 
+#define TRACKPOINT_TYPE_NEW_TRACK 1
+#define TRACKPOINT_TYPE_WAYPOINT 2
+#define TRACKPOINT_TYPE_EMPTY 255
+
+#define TRACKPOINT_SIZE 16
+
+enum result
+{
+	RESULT_OK = 0,
+	RESULT_INVALID = -1,
+	RESULT_ERROR = -2,
+};
+
 struct navitime
 {
 	unsigned int s:6;
@@ -54,19 +67,6 @@ struct boundingbox
 	double latitude_max;
 	double longitude_min;
 	double longitude_max;
-};
-
-#define TRACKPOINT_TYPE_NEW_TRACK 1
-#define TRACKPOINT_TYPE_WAYPOINT 2
-#define TRACKPOINT_TYPE_EMPTY 255
-
-#define TRACKPOINT_SIZE 16
-
-enum result
-{
-	RESULT_OK = 0,
-	RESULT_INVALID = -1,
-	RESULT_ERROR = -2,
 };
 
 enum result trackpoint_read(FILE *, struct trackpoint *);

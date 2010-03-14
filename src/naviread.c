@@ -155,7 +155,6 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-
 void usage(char *prog)
 {
 	printf("Usage: %s [OPTION]... NVPIPE [GPXFILE]\n", prog);
