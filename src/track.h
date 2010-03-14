@@ -16,15 +16,39 @@
 */
 
 
-#ifndef NAVIREAD_H_
-#define NAVIREAD_H_
+#ifndef TRACK_H_
+#define TRACK_H_
 
-#define SHORT_OPTIONS "h"
-enum
+#include <stdio.h>
+
+struct navitime
 {
-	KEY_HELP = 'h',
+	unsigned int s:6;
+	unsigned int i:6;
+	unsigned int h:5;
+	unsigned int d:5;
+	unsigned int m:4;
+	unsigned int Y:6;
 };
 
-void usage(char *);
+struct trackpoint
+{
+	unsigned char type;
+	unsigned char unknown;
+	struct navitime time;
+	signed int latitude;
+	signed int longitude;
+	signed short height;
+	struct trackpoint *next;
+};
+
+
+#define TRACKPOINT_SIZE 16
+
+struct trackpoint *read_track(FILE *);
+void print_track(FILE *, struct trackpoint *);
+int read_point(FILE *, struct trackpoint *);
+struct trackpoint *last_point(struct trackpoint *);
+struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
 
 #endif

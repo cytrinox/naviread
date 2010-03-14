@@ -16,15 +16,11 @@
 */
 
 
-#ifndef NAVIREAD_H_
-#define NAVIREAD_H_
+#ifndef ANALYSIS_H_
+#define ANALYSIS_H_
 
-#define SHORT_OPTIONS "h"
-enum
-{
-	KEY_HELP = 'h',
-};
+#include <stdio.h>
 
-void usage(char *);
+int analyze(FILE *);
 
 #endif
