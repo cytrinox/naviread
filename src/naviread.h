@@ -19,10 +19,11 @@
 #ifndef NAVIREAD_H_
 #define NAVIREAD_H_
 
-#define SHORT_OPTIONS "h"
+#define SHORT_OPTIONS "hs"
 enum
 {
 	KEY_HELP = 'h',
+	KEY_SPLIT = 's',
 };
 
 void usage(char *);

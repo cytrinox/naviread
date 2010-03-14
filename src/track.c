@@ -20,6 +20,38 @@
 #include "track.h"
 
 
+struct tracklist *track_split(struct trackpoint *track)
+{
+	struct tracklist *start = NULL;
+	struct tracklist *ptr = NULL;
+	struct trackpoint *last = NULL;
+
+	while (track != NULL)
+	{
+		if (track->type & TRACKPOINT_TYPE_NEW_TRACK)
+		{
+			if (start == NULL)
+			{
+				ptr = start = (struct tracklist *)malloc(sizeof(struct tracklist));
+			}
+			else
+			{
+				ptr = ptr->next = (struct tracklist *)malloc(sizeof(struct tracklist));
+				last->next = NULL;
+			}
+
+			ptr->item = track;
+		}
+
+		last = track;
+		track = track->next;
+	}
+
+	if (ptr) ptr->next = NULL;
+
+	return start;
+}
+
 struct trackpoint *read_track(FILE *nvpipe)
 {
 	struct trackpoint *start = NULL;

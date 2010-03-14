@@ -42,12 +42,19 @@ struct trackpoint
 	struct trackpoint *next;
 };
 
+struct tracklist
+{
+	struct trackpoint *item;
+	struct tracklist *next;
+};
+
 #define TRACKPOINT_TYPE_NEW_TRACK 1
 #define TRACKPOINT_TYPE_WAYPOINT 2
 #define TRACKPOINT_TYPE_EMPTY 255
 
 #define TRACKPOINT_SIZE 16
 
+struct tracklist *track_split(struct trackpoint *);
 struct trackpoint *read_track(FILE *);
 char read_has_more(FILE *);
 void print_track(FILE *, struct trackpoint *);

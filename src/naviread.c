@@ -29,12 +29,14 @@ int main(int argc, char *argv[])
 	static struct option long_options[] =
 	{
 		{"help", no_argument, NULL, KEY_HELP},
+		{"split", no_argument, NULL, KEY_SPLIT},
 		{0, 0, 0, 0}
 	};
 
 
 	int option;
 	int index;
+	char option_split = 0;
 	char *gpxfile = NULL;
 	char *nvfile = NULL;
 	FILE *nvpipe;
@@ -78,6 +80,10 @@ int main(int argc, char *argv[])
 				exit(EXIT_SUCCESS);
 				break;
 
+			case KEY_SPLIT:
+				option_split = 1;
+				break;
+
 			// undefinierte Optionen
 			default:
 				fprintf(stderr, "%s: undefined option -- %c\n", argv[0], option);
@@ -98,8 +104,33 @@ int main(int argc, char *argv[])
 
 	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
 	fseek(nvpipe, 0x00001000, SEEK_SET);
+	struct trackpoint *track = read_track(nvpipe);
 
-	if (gpxfile != NULL)
+	if (option_split)
+	{
+		struct tracklist *tracks = track_split(track);
+
+		while (tracks)
+		{
+			char buffer[100];
+			sprintf(buffer, "%4d-%.2d-%.2d %.2d-%.2d-%.2d.gpx", 2000+tracks->item->time.Y, tracks->item->time.m, tracks->item->time.d, tracks->item->time.h, tracks->item->time.i, tracks->item->time.s);
+
+			gpxpipe = fopen(buffer, "w");
+
+			if (gpxpipe == NULL)
+			{
+				fprintf(stderr, "error opening file '%s'\n", gpxfile);
+				exit(EXIT_FAILURE);
+			}
+
+			print_track(gpxpipe, tracks->item);
+
+			fclose(gpxpipe);
+
+			tracks = tracks->next;
+		}
+	}
+	else if (gpxfile != NULL)
 	{
 		gpxpipe = fopen(gpxfile, "w");
 
@@ -109,13 +140,13 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 
-		print_track(gpxpipe, read_track(nvpipe));
+		print_track(gpxpipe, track);
 
 		fclose(gpxpipe);
 	}
 	else
 	{
-		print_track(stdout, read_track(nvpipe));
+		print_track(stdout, track);
 	}
 
 	fclose(nvpipe);
@@ -131,4 +162,5 @@ void usage(char *prog)
 	printf("\n");
 	printf("mögliche Aktionen:\n");
 	printf("  -%c, --help               diese Hilfe anzeigen\n", KEY_HELP);
+	printf("  -%c, --split              Tracks in einzelne Dateien aufsplitten\n", KEY_SPLIT);
 }
