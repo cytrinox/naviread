@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 
 	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
 	fseek(nvpipe, 0x00001000, SEEK_SET);
-	struct trackpoint *track = read_track(nvpipe);
+	struct trackpoint *track = track_read(nvpipe);
 
 	if (option_split)
 	{
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 				exit(EXIT_FAILURE);
 			}
 
-			print_track(gpxpipe, tracks->item);
+			track_print(gpxpipe, tracks->item);
 
 			fclose(gpxpipe);
 
@@ -140,13 +140,13 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 
-		print_track(gpxpipe, track);
+		track_print(gpxpipe, track);
 
 		fclose(gpxpipe);
 	}
 	else
 	{
-		print_track(stdout, track);
+		track_print(stdout, track);
 	}
 
 	fclose(nvpipe);

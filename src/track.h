@@ -54,12 +54,12 @@ struct tracklist
 
 #define TRACKPOINT_SIZE 16
 
-struct tracklist *track_split(struct trackpoint *);
-struct trackpoint *read_track(FILE *);
-char read_has_more(FILE *);
-void print_track(FILE *, struct trackpoint *);
-int read_point(FILE *, struct trackpoint *);
-struct trackpoint *last_point(struct trackpoint *);
+int trackpoint_read(FILE *, struct trackpoint *);
+struct trackpoint *track_read(FILE *);
+char track_find_next(FILE *);
+struct trackpoint *track_last_point(struct trackpoint *);
 struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
+struct tracklist *track_split(struct trackpoint *);
+void track_print(FILE *, struct trackpoint *);
 
 #endif
