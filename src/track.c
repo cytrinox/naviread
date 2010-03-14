@@ -62,6 +62,7 @@ struct trackpoint *track_read(FILE *nvpipe)
 
 		memcpy(ptr, &point, sizeof(struct trackpoint));
 	}
+
 	if (ptr) ptr->next = NULL;
 
 	if (track_find_next(nvpipe))
@@ -80,6 +81,7 @@ char track_find_next(FILE *nvpipe)
 	while (1)
 	{
 		int result = trackpoint_read(nvpipe, &point);
+
 		switch (result)
 		{
 			case 0:
@@ -118,19 +120,20 @@ struct boundingbox track_boundingbox(struct trackpoint *point)
 	return result;
 }
 
-struct trackpoint *track_last_point(struct trackpoint *start)
+struct trackpoint *track_last_point(struct trackpoint *point)
 {
-	if (start)
+	if (point)
 	{
-		while (start->next) start = start->next;
+		while (point->next) point = point->next;
 	}
 
-	return start;
+	return point;
 }
 
 struct trackpoint *track_concat(struct trackpoint *first, struct trackpoint *second)
 {
 	struct trackpoint *last = track_last_point(first);
+
 	if (last)
 	{
 		last->next = second;
@@ -142,15 +145,15 @@ struct trackpoint *track_concat(struct trackpoint *first, struct trackpoint *sec
 	}
 }
 
-struct tracklist *track_split(struct trackpoint *track)
+struct tracklist *track_split(struct trackpoint *point)
 {
 	struct tracklist *start = NULL;
 	struct tracklist *ptr = NULL;
 	struct trackpoint *last = NULL;
 
-	while (track != NULL)
+	while (point != NULL)
 	{
-		if (track->type & TRACKPOINT_TYPE_NEW_TRACK)
+		if (point->type & TRACKPOINT_TYPE_NEW_TRACK)
 		{
 			if (start == NULL)
 			{
@@ -162,11 +165,11 @@ struct tracklist *track_split(struct trackpoint *track)
 				last->next = NULL;
 			}
 
-			ptr->item = track;
+			ptr->item = point;
 		}
 
-		last = track;
-		track = track->next;
+		last = point;
+		point = point->next;
 	}
 
 	if (ptr) ptr->next = NULL;
@@ -176,8 +179,6 @@ struct tracklist *track_split(struct trackpoint *track)
 
 void track_print(FILE *output, struct trackpoint *start)
 {
-	int trackcount;
-	int wptcount;
 	struct trackpoint *ptr;
 
 	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -189,7 +190,7 @@ void track_print(FILE *output, struct trackpoint *start)
 	fprintf(output, "</metadata>\n");
 
 
-	wptcount = 0;
+	int count_waypoint = 0;
 	ptr = start;
 
 	while (ptr)
@@ -199,7 +200,7 @@ void track_print(FILE *output, struct trackpoint *start)
 			fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 			fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
 			fprintf(output, "<time>%d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
-			fprintf(output, "<name>Push Log Point %d</name>\n", ++wptcount);
+			fprintf(output, "<name>Push Log Point %d</name>\n", ++count_waypoint);
 			fprintf(output, "</wpt>\n");
 		}
 
@@ -207,7 +208,7 @@ void track_print(FILE *output, struct trackpoint *start)
 	}
 
 
-	trackcount = 0;
+	int counter_track = 0;
 	ptr = start;
 
 	// unvollständigen Track überspringen
@@ -218,17 +219,16 @@ void track_print(FILE *output, struct trackpoint *start)
 		if (ptr->type & TRACKPOINT_TYPE_NEW_TRACK)
 		{
 			// ggf. alten Track abschließen
-			if (trackcount > 0)
+			if (counter_track > 0)
 			{
 				fprintf(output, "</trkseg>\n");
 				fprintf(output, "</trk>\n");
 			}
 
 			// neuen Track starten
-			++trackcount;
 			fprintf(output, "<trk>\n");
 			fprintf(output, "<name>%4d-%.2d-%.2d %.2d-%.2d-%.2d</name>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
-			fprintf(output, "<number>%d</number>\n", trackcount);
+			fprintf(output, "<number>%d</number>\n", ++counter_track);
 			fprintf(output, "<trkseg>\n");
 		}
 
@@ -242,7 +242,7 @@ void track_print(FILE *output, struct trackpoint *start)
 	}
 
 	// ggf. alten Track abschließen
-	if (trackcount > 0)
+	if (counter_track > 0)
 	{
 		fprintf(output, "</trkseg>\n");
 		fprintf(output, "</trk>\n");
