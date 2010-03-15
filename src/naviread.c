@@ -34,21 +34,17 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 
-
 	int option;
 	int index;
-	char option_split = 0;
 	char *gpxfile = NULL;
 	char *nvfile = NULL;
 	FILE *nvpipe;
-
 
 	opterr = 1;
 	while ((option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index)) != -1)
 	{
 		if (option == '?') exit(EXIT_FAILURE);
 	}
-
 
 	if (optind < argc)
 	{
@@ -65,6 +61,7 @@ int main(int argc, char *argv[])
 		gpxfile = argv[optind++];
 	}
 
+	char option_split = 0;
 
 	opterr = 1;
 	optind = 0;
@@ -92,14 +89,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
-
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
-
 
 	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
 	fseek(nvpipe, 0x00001000, SEEK_SET);
 	struct trackpoint *track = track_read(nvpipe);
+	fclose(nvpipe);
 
 	if (option_split)
 	{
@@ -121,9 +117,6 @@ int main(int argc, char *argv[])
 	{
 		track_print(stdout, track);
 	}
-
-	fclose(nvpipe);
-
 
 	return 0;
 }

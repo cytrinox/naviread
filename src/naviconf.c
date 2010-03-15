@@ -80,7 +80,6 @@ int main(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 
-
 	int option;
 	int index;
 	int ivalue;
@@ -91,18 +90,11 @@ int main(int argc, char *argv[])
 	FILE *nvpipe;
 	struct naviconf nvconf;
 
-
-	char action_conf = 0;
-	char action_analyze = 0;
-	char action_help = 0;
-
-
 	opterr = 1;
 	while ((option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index)) != -1)
 	{
 		if (option == '?') exit(EXIT_FAILURE);
 	}
-
 
 	if (optind < argc)
 	{
@@ -113,7 +105,6 @@ int main(int argc, char *argv[])
 		usage(argv[0]);
 		exit(EXIT_FAILURE);
 	}
-
 
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
@@ -126,6 +117,9 @@ int main(int argc, char *argv[])
 
 	fclose(nvpipe);
 
+	char action_conf = 0;
+	char action_analyze = 0;
+	char action_help = 0;
 
 	opterr = 1;
 	optind = 0;
@@ -744,7 +738,6 @@ int main(int argc, char *argv[])
 				}
 				break;
 
-
 			// undefinierte Optionen
 			default:
 				fprintf(stderr, "%s: undefined option -- %c\n", argv[0], option);
@@ -765,7 +758,6 @@ int main(int argc, char *argv[])
 		print_conf(&nvconf);
 	}
 
-
 	nvpipe = fopen(nvfile, "r+b");
 	check_file_handle(nvpipe, nvfile);
 
@@ -778,7 +770,6 @@ int main(int argc, char *argv[])
 		}
 	}
 
-
 	if (write_conf(nvpipe, &nvconf) != 0)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
@@ -786,7 +777,6 @@ int main(int argc, char *argv[])
 	}
 
 	fclose(nvpipe);
-
 
 	return 0;
 }

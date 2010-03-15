@@ -199,7 +199,6 @@ void track_print(FILE *output, struct trackpoint *start)
 	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", bounds.latitude_min, bounds.longitude_min, bounds.latitude_max, bounds.longitude_max);
 	fprintf(output, "</metadata>\n");
 
-
 	int count_waypoint = 0;
 	ptr = start;
 
@@ -216,7 +215,6 @@ void track_print(FILE *output, struct trackpoint *start)
 
 		ptr = ptr->next;
 	}
-
 
 	int counter_track = 0;
 	ptr = start;
