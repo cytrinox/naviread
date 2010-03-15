@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
 
 	char action_conf = 0;
 	char action_analyze = 0;
-	char action_help = 0;
 
 	opterr = 1;
 	optind = 0;
@@ -130,6 +129,11 @@ int main(int argc, char *argv[])
 
 		switch (option)
 		{
+			case KEY_HELP:
+				usage(argv[0]);
+				exit(EXIT_SUCCESS);
+				break;
+
 			case KEY_CONF:
 				action_conf = 1;
 				break;
@@ -153,10 +157,6 @@ int main(int argc, char *argv[])
 					fprintf(stderr, "valid values: yes, no\n");
 					exit(EXIT_FAILURE);
 				}
-				break;
-
-			case KEY_HELP:
-				action_help = 1;
 				break;
 
 			case KEY_SET_SYSTEM_UNIT:
@@ -744,13 +744,6 @@ int main(int argc, char *argv[])
 				exit(EXIT_FAILURE);
 				break;
 		}
-	}
-
-
-	if (action_help)
-	{
-		usage(argv[0]);
-		exit(EXIT_SUCCESS);
 	}
 
 	if (action_conf)
