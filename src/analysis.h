@@ -19,7 +19,10 @@
 #ifndef ANALYSIS_H_
 #define ANALYSIS_H_
 
+#include "configuration.h"
 
-int analyze(FILE *);
+enum result analyse(FILE *);
+enum result analyse_value(FILE *, enum offset, unsigned int, int, ...);
+enum result analyse_value_range(FILE *, enum offset, unsigned int, unsigned int, unsigned int);
 
 #endif

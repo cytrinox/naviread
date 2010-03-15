@@ -30,7 +30,7 @@
 enum
 {
 	KEY_CONF = 'C',
-	KEY_ANALYZE = 'A',
+	KEY_ANALYSE = 'A',
 	KEY_CLEAR_MEMORY = 'D',
 	KEY_HELP = 'H',
 	KEY_SET_LOG_MODE = 'l',

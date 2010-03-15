@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	static struct option long_options[] =
 	{
 		{"conf", no_argument, NULL, KEY_CONF},
-		{"analyze", no_argument, NULL, KEY_ANALYZE},
+		{"analyse", no_argument, NULL, KEY_ANALYSE},
 		{"clear-memory", optional_argument, NULL, KEY_CLEAR_MEMORY},
 		{"help", no_argument, NULL, KEY_HELP},
 		{"set-log-mode", required_argument, NULL, KEY_SET_LOG_MODE},
@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 	fclose(nvpipe);
 
 	char action_conf = 2;
-	char action_analyze = 0;
+	char action_analyse = 0;
 
 	opterr = 1;
 	optind = 0;
@@ -139,8 +139,8 @@ int main(int argc, char *argv[])
 				action_conf = 1;
 				break;
 
-			case KEY_ANALYZE:
-				action_analyze = 1;
+			case KEY_ANALYSE:
+				action_analyse = 1;
 				break;
 
 			case KEY_CLEAR_MEMORY:
@@ -755,9 +755,9 @@ int main(int argc, char *argv[])
 	nvpipe = fopen(nvfile, "r+b");
 	check_file_handle(nvpipe, nvfile);
 
-	if (action_analyze)
+	if (action_analyse)
 	{
-		if (analyze(nvpipe) != 0)
+		if (analyse(nvpipe) == RESULT_ERROR)
 		{
 			fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
 			exit(EXIT_FAILURE);
@@ -791,7 +791,7 @@ void usage(char *prog)
 	printf("\n");
 	printf("mögliche Aktionen:\n");
 	printf("  -%c, --conf               aktuelle Konfiguration ausgeben\n", KEY_CONF);
-	printf("  -%c, --analyze            nach unbekannten Werten suchen\n", KEY_ANALYZE);
+	printf("  -%c, --analyse            nach unbekannten Werten suchen\n", KEY_ANALYSE);
 	printf("  -%c, --clear-memory[=y|n] Speicher beim nächsten Start leeren\n", KEY_CLEAR_MEMORY);
 	printf("  -%c, --help               diese Hilfe anzeigen\n", KEY_HELP);
 	printf("\n");
