@@ -116,12 +116,7 @@ int main(int argc, char *argv[])
 
 
 	nvpipe = fopen(nvfile, "rb");
-
-	if (nvpipe == NULL)
-	{
-		fprintf(stderr, "error opening file '%s'\n", nvfile);
-		exit(EXIT_FAILURE);
-	}
+	check_file_handle(nvpipe, nvfile);
 
 	if (read_conf(nvpipe, &nvconf) != 0)
 	{
@@ -772,12 +767,7 @@ int main(int argc, char *argv[])
 
 
 	nvpipe = fopen(nvfile, "r+b");
-
-	if (nvpipe == NULL)
-	{
-		fprintf(stderr, "error opening file '%s'\n", nvfile);
-		exit(EXIT_FAILURE);
-	}
+	check_file_handle(nvpipe, nvfile);
 
 	if (action_analyze)
 	{
