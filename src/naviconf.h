@@ -15,6 +15,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file naviconf.h
+//! \brief Management of configuration settings
 
 #ifndef NAVICONF_H_
 #define NAVICONF_H_
@@ -25,8 +27,9 @@
 #endif
 #endif
 
-
+//! \brief List of short options used by getopt
 #define SHORT_OPTIONS "CAD::Hl:wbcuz:s:edt:v:g:"
+//! \brief Codes used by getopt
 enum
 {
 	KEY_CONF = 'C',

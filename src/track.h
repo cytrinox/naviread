@@ -15,49 +15,83 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file track.h
+//! \brief Track-specific definitions
 
 #ifndef TRACK_H_
 #define TRACK_H_
 
+//! \brief Beginning of new track
 #define TRACKPOINT_TYPE_NEW_TRACK 1
+//! \brief Marked waypoint
 #define TRACKPOINT_TYPE_WAYPOINT 2
+//! \brief Continuation of track after sleep
 #define TRACKPOINT_TYPE_WAKEUP 4
+//! \brief Empty point
 #define TRACKPOINT_TYPE_EMPTY 255
 
+//! \brief Size of trackpoint data structure used by logger in bytes
 #define TRACKPOINT_SIZE 16
 
+//! \brief Timestamp of trackpoint
 struct navitime
 {
+	//! \brief Seconds
 	unsigned int s:6;
+	//! \brief Minutes
 	unsigned int i:6;
+	//! \brief Hours
 	unsigned int h:5;
+	//! \brief Day
 	unsigned int d:5;
+	//! \brief Month
 	unsigned int m:4;
+	//! \brief Year
+	//!
+	//! Counted from 2000.
 	unsigned int Y:6;
 };
 
+//! \brief Trackpoint
 struct trackpoint
 {
+	//! \brief Type of trackpoint
+	//!
+	//! Known values: TRACKPOINT_TYPE_NEW_TRACK, TRACKPOINT_TYPE_WAYPOINT, TRACKPOINT_TYPE_WAKEUP, TRACKPOINT_TYPE_EMPTY
 	unsigned char type;
+	//! \brief Unknown field
 	unsigned char unknown;
+	//! \brief Timestamp
 	struct navitime time;
+	//! \brief Latitude
 	signed int latitude;
+	//! \brief Longitude
 	signed int longitude;
+	//! \brief Elevation
 	signed short height;
+	//! \brief Pointer to next trackpoint
 	struct trackpoint *next;
 };
 
+//! \brief List of tracks
 struct tracklist
 {
+	//! \brief Pointer to first point of track
 	struct trackpoint *item;
+	//! \brief Pointer to next track
 	struct tracklist *next;
 };
 
+//! \brief Boundingbox
 struct boundingbox
 {
+	//! \brief Minimal latitude
 	double latitude_min;
+	//! \brief Maximal latitude
 	double latitude_max;
+	//! \brief Minimal longitude
 	double longitude_min;
+	//! \brief Maximal longitude
 	double longitude_max;
 };
 

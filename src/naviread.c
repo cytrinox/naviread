@@ -15,6 +15,9 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file naviread.c
+//! \brief Track log readout
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,7 +28,7 @@
 #include "configuration.h"
 #include "track.h"
 
-
+//! \brief Track log readout program
 int main(int argc, char *argv[])
 {
 	static struct option long_options[] =
@@ -128,9 +131,12 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void usage(char *prog)
+//! \brief Print usage information
+//!
+//! \param name Program name
+void usage(char *name)
 {
-	printf("Usage: %s [OPTION]... NVPIPE [GPXFILE]\n", prog);
+	printf("Usage: %s [OPTION]... NVPIPE [GPXFILE]\n", name);
 	printf("\n");
 	printf("mögliche Aktionen:\n");
 	printf("  -%c, --help               diese Hilfe anzeigen\n", KEY_HELP);

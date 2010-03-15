@@ -15,18 +15,28 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file configuration.c
+//! \brief Configuration-specific functions
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "navi.h"
 #include "configuration.h"
 
-
+//! \brief Encode password string for storage in logger configuration
+//!
+//! Replaces all unused characters up to the maximum of ten characters with PASSWORD_EMPTY.
+//! \param password Password as string
 void configuration_password_encode(char *password)
 {
 	memset(password+strlen(password), PASSWORD_EMPTY, 10-strlen(password));
 }
 
+//! \brief Decode password string from storage in logger configuration
+//!
+//! Null-terminates the password so it can be used as a C string.
+//! \param password Password in encoded form
 void configuration_password_decode(char *password)
 {
 	int i = 0;
@@ -35,24 +45,48 @@ void configuration_password_decode(char *password)
 	*(ptr-1) = 0;
 }
 
-enum result configuration_read_setting(FILE *nvpipe, enum offset offset, int size, void *buffer)
+//! \brief Read single configuration setting
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param offset Offset of setting location from beginning of file
+//! \param size Storage size of setting
+//! \param buffer Location to store data
+//! \return result.RESULT_ERROR on read error\n
+//! result.RESULT_OK otherwise
+enum result configuration_read_setting(FILE *nvpipe, enum nvpipe_offset offset, int size, void *buffer)
 {
 	if (fseek(nvpipe, offset, SEEK_SET) != 0) return RESULT_ERROR;
 	if (fread(buffer, size, 1, nvpipe) != 1) return RESULT_ERROR;
 	return RESULT_OK;
 }
 
-enum result configuration_write_setting(FILE *nvpipe, enum offset offset, int size, void *buffer)
+//! \brief Write single configuration setting
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param offset Offset of setting location from beginning of file
+//! \param size Storage size of setting
+//! \param buffer Location to read data from
+//! \return result.RESULT_ERROR on write error\n
+//! result.RESULT_OK otherwise
+enum result configuration_write_setting(FILE *nvpipe, enum nvpipe_offset offset, int size, void *buffer)
 {
 	if (fseek(nvpipe, offset, SEEK_SET) != 0) return RESULT_ERROR;
 	if (fwrite(buffer, size, 1, nvpipe) != 1) return RESULT_ERROR;
 	return RESULT_OK;
 }
 
-enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum access access)
+//! \brief Read/write complete configuration
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param nvconf Storage location of configuration data
+//! \param access ACCESS_WRITE to write data to NVPIPE.DAT\n
+//! ACCESS_READ to read data from NVPIPE.DAT
+//! \return result.RESULT_ERROR on write error\n
+//! result.RESULT_OK otherwise
+enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum file_access access)
 {
 	// select access function
-	enum result (*ptr)(FILE *, enum offset, int, void *);
+	enum result (*ptr)(FILE *, enum nvpipe_offset, int, void *);
 
 	if (access == ACCESS_WRITE)
 	{
@@ -102,6 +136,13 @@ enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum 
 	return RESULT_OK;
 }
 
+//! \brief Read complete configuration
+//!
+//! Decodes password so it can be used as a C string.
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param nvconf Storage location of configuration data
+//! \return result.RESULT_ERROR on write error\n
+//! result.RESULT_OK otherwise
 enum result configuration_read(FILE *nvpipe, struct naviconf *nvconf)
 {
 	if (configuration_readwrite(nvpipe, nvconf, ACCESS_READ) == RESULT_ERROR) return RESULT_ERROR;
@@ -110,6 +151,13 @@ enum result configuration_read(FILE *nvpipe, struct naviconf *nvconf)
 	return RESULT_OK;
 }
 
+//! \brief Write complete configuration
+//!
+//! Takes care encoding of password before writing and decoding afterwards.
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param nvconf Storage location of configuration data
+//! \return result.RESULT_ERROR on write error\n
+//! result.RESULT_OK otherwise
 enum result configuration_write(FILE *nvpipe, struct naviconf *nvconf)
 {
 	configuration_password_encode(nvconf->password);
@@ -123,6 +171,9 @@ enum result configuration_write(FILE *nvpipe, struct naviconf *nvconf)
 	return RESULT_OK;
 }
 
+//! \brief Print configuration settings
+//!
+//! \param nvconf Storage location of configuration data
 void configuration_print(struct naviconf *nvconf)
 {
 	puts("Geräteeinstellungen");

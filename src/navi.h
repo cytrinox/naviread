@@ -15,22 +15,33 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file navi.h
+//! \brief global header file
 
 #ifndef NAVI_H_
 #define NAVI_H_
 
+//! \brief Result type of various operations
 enum result
 {
+	//! \brief Operation completed successfully
 	RESULT_OK = 0,
+	//! \brief Operation completed successfully, but data is invalid
 	RESULT_INVALID = -1,
+	//! \brief Operation could not be completed
 	RESULT_ERROR = -2,
 };
 
+//! \brief Exit application if file handle is invalid (i.e. file could not be opened).
+//!
+//! Print error message to stderr, if file name is given.
+//! \param handle File handle
+//! \param file File name
 static inline void check_file_handle(FILE *handle, char *file)
 {
 	if (handle == NULL)
 	{
-		fprintf(stderr, "error opening file '%s'\n", file);
+		if (file) fprintf(stderr, "error opening file '%s'\n", file);
 		exit(EXIT_FAILURE);
 	}
 }

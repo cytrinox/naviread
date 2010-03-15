@@ -15,6 +15,8 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file analysis.h
+//! \brief Analysis-specific definitions
 
 #ifndef ANALYSIS_H_
 #define ANALYSIS_H_
@@ -22,7 +24,7 @@
 #include "configuration.h"
 
 enum result analyse(FILE *);
-enum result analyse_value(FILE *, enum offset, unsigned int, int, ...);
-enum result analyse_value_range(FILE *, enum offset, unsigned int, unsigned int, unsigned int);
+enum result analyse_value(FILE *, enum nvpipe_offset, unsigned int, int, ...);
+enum result analyse_value_range(FILE *, enum nvpipe_offset, unsigned int, unsigned int, unsigned int);
 
 #endif

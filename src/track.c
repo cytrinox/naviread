@@ -15,6 +15,9 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file track.c
+//! \brief Track-specific functions
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,29 +25,41 @@
 #include "navi.h"
 #include "track.h"
 
-
-enum result trackpoint_read(FILE *file, struct trackpoint *point)
+//! \brief Read single trackpoint
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param point Location to store data
+//! \return result.RESULT_ERROR on read error\n
+//! result.RESULT_INVALID when empty record was read\n
+//! result.RESULT_OK otherwise
+enum result trackpoint_read(FILE *nvpipe, struct trackpoint *point)
 {
 	// read values into structure
-	if (fread(&point->type,      1, 1, file) != 1) return RESULT_ERROR;
-	if (fread(&point->unknown,   1, 1, file) != 1) return RESULT_ERROR;
-	if (fread(&point->time,      4, 1, file) != 1) return RESULT_ERROR;
-	if (fread(&point->latitude,  4, 1, file) != 1) return RESULT_ERROR;
-	if (fread(&point->longitude, 4, 1, file) != 1) return RESULT_ERROR;
-	if (fread(&point->height,    2, 1, file) != 1) return RESULT_ERROR;
+	if (fread(&point->type,      1, 1, nvpipe) != 1) return RESULT_ERROR;
+	if (fread(&point->unknown,   1, 1, nvpipe) != 1) return RESULT_ERROR;
+	if (fread(&point->time,      4, 1, nvpipe) != 1) return RESULT_ERROR;
+	if (fread(&point->latitude,  4, 1, nvpipe) != 1) return RESULT_ERROR;
+	if (fread(&point->longitude, 4, 1, nvpipe) != 1) return RESULT_ERROR;
+	if (fread(&point->height,    2, 1, nvpipe) != 1) return RESULT_ERROR;
 
-	if (point->type != TRACKPOINT_TYPE_EMPTY)
-	{
-		// valid record
-		return RESULT_OK;
-	}
-	else
+	if (point->type == TRACKPOINT_TYPE_EMPTY)
 	{
 		// empty record
 		return RESULT_INVALID;
 	}
+	else
+	{
+		// valid record
+		return RESULT_OK;
+	}
 }
 
+//! \brief Read complete track log from logger
+//!
+//! Skips trackpoints that are part of an incomplete track,
+//! i.e. the beginning of the track was overwritten by the logger.
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \return Pointer to beginning of first complete track
 struct trackpoint *track_read(FILE *nvpipe)
 {
 	struct trackpoint *start = NULL;
@@ -90,6 +105,12 @@ struct trackpoint *track_read(FILE *nvpipe)
 	return start;
 }
 
+//! \brief Skip empty trackpoints to find more trackpoints towards the end of file
+//!
+//! Sets current position in \p nvpipe to the beginning of first found trackpoint (if any).
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \return 1 if more trackpoints were found\n
+//! 0 otherwise
 char track_find_next(FILE *nvpipe)
 {
 	struct trackpoint point;
@@ -111,6 +132,10 @@ char track_find_next(FILE *nvpipe)
 	}
 }
 
+//! \brief Calculate bounding box for track
+//!
+//! \param point Beginning of track
+//! \return Bounding box
 struct boundingbox track_boundingbox(struct trackpoint *point)
 {
 	int minlat = 900000000;
@@ -136,6 +161,10 @@ struct boundingbox track_boundingbox(struct trackpoint *point)
 	return result;
 }
 
+//! \brief Get last point of track
+//!
+//! \param point Beginning of track
+//! \return Pointer to last point
 struct trackpoint *track_last_point(struct trackpoint *point)
 {
 	if (point)
@@ -146,6 +175,11 @@ struct trackpoint *track_last_point(struct trackpoint *point)
 	return point;
 }
 
+//! \brief Concatenate two tracks
+//!
+//! \param first Beginning of first track
+//! \param second Beginning of second track
+//! \return Pointer to beginning of concatenated track
 struct trackpoint *track_concat(struct trackpoint *first, struct trackpoint *second)
 {
 	struct trackpoint *last = track_last_point(first);
@@ -161,6 +195,10 @@ struct trackpoint *track_concat(struct trackpoint *first, struct trackpoint *sec
 	}
 }
 
+//! \brief Split complete track log into single tracks
+//!
+//! \param point Beginning of track log
+//! \return Pointer to list of tracks
 struct tracklist *track_split(struct trackpoint *point)
 {
 	struct tracklist *start = NULL;
@@ -193,6 +231,11 @@ struct tracklist *track_split(struct trackpoint *point)
 	return start;
 }
 
+//! \brief Print track in GPX format
+//!
+//! Prints all waypoints and tracks contained in \p start.
+//! \param output File handle to write to
+//! \param start Beginning of track
 void track_print(FILE *output, struct trackpoint *start)
 {
 	struct trackpoint *ptr;
@@ -267,6 +310,10 @@ void track_print(FILE *output, struct trackpoint *start)
 	fprintf(output, "</gpx>\n");
 }
 
+//! \brief Write track in GPX format to file
+//!
+//! \param output File name
+//! \param start Beginning of track
 void track_write(char *output, struct trackpoint *start)
 {
 	FILE *file = fopen(output, "w");
@@ -275,18 +322,32 @@ void track_write(char *output, struct trackpoint *start)
 	fclose(file);
 }
 
+//! \brief Format navitime as string used in GPX specification
+//!
+//! \param time Timestamp
+//! \return Pointer to static buffer
 char *navitime_gpx(struct navitime time)
 {
-	char buffer[100];
+	static char buffer[100];
 	return navitime_to_string(buffer, "%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ", time);
 }
 
+//! \brief Format navitime as string used as filename
+//!
+//! \param time Timestamp
+//! \return Pointer to static buffer
 char *navitime_file(struct navitime time)
 {
-	char buffer[100];
+	static char buffer[100];
 	return navitime_to_string(buffer, "%4d-%.2d-%.2d %.2d-%.2d-%.2d", time);
 }
 
+//! \brief Format navitime as string
+//!
+//! \param buffer Location to store string
+//! \param format Format string
+//! \param time Timestamp
+//! \return buffer
 char *navitime_to_string(char *buffer, char *format, struct navitime time)
 {
 	sprintf(buffer, format, 2000+time.Y, time.m, time.d, time.h, time.i, time.s);

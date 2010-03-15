@@ -15,6 +15,9 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file naviconf.c
+//! \brief Management of configuration settings
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,7 +28,7 @@
 #include "analysis.h"
 #include "configuration.h"
 
-
+//! \brief Management of configuration settings program
 int main(int argc, char *argv[])
 {
 	static struct option long_options[] =
@@ -783,19 +786,34 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+//! \brief Determine if option argument means "enable"
+//!
+//! Accepts single characters "1", "y", "Y", "e" and "E" as well as strings "on" and "yes".
+//! \param optarg Option argument given by getopt
+//! \return 1 if option argument means "enable"\n
+//! 0 otherwise
 char option_enable(char *optarg)
 {
 	return ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on") || !strcasecmp(optarg, "yes"));
 }
 
+//! \brief Determine if option argument means "disable"
+//!
+//! Accepts single characters "0", "n", "N", "d" and "D" as well as strings "off" and "no".
+//! \param optarg Option argument given by getopt
+//! \return 1 if option argument means "disable"\n
+//! 0 otherwise
 char option_disable(char *optarg)
 {
 	return ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off") || !strcasecmp(optarg, "no"));
 }
 
-void usage(char *prog)
+//! \brief Print usage information
+//!
+//! \param name Program name
+void usage(char *name)
 {
-	printf("Usage: %s [OPTION]... FILE\n", prog);
+	printf("Usage: %s [OPTION]... FILE\n", name);
 	printf("\n");
 	printf("mögliche Aktionen:\n");
 	printf("  -%c, --conf               aktuelle Konfiguration ausgeben\n", KEY_CONF);

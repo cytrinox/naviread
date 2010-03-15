@@ -15,14 +15,20 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file naviread.h
+//! \brief Track log readout
 
 #ifndef NAVIREAD_H_
 #define NAVIREAD_H_
 
+//! \brief List of short options used by getopt
 #define SHORT_OPTIONS "hs"
+//! \brief Codes used by getopt
 enum
 {
+	//! \brief Code used by getopt for -h and --help
 	KEY_HELP = 'h',
+	//! \brief Code used by getopt for -s and --split
 	KEY_SPLIT = 's',
 };
 

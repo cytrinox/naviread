@@ -15,6 +15,9 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+//! \file analysis.c
+//! \brief Analysis-specific functions
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +26,11 @@
 #include "configuration.h"
 #include "track.h"
 
-
+//! \brief Analyse NVPIPE.DAT for unknown values
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \return result.RESULT_ERROR on read error\n
+//! result.RESULT_OK otherwise
 enum result analyse(FILE *nvpipe)
 {
 	// analyse settings with known distinct values
@@ -96,7 +103,16 @@ enum result analyse(FILE *nvpipe)
 	return RESULT_OK;
 }
 
-enum result analyse_value(FILE *nvpipe, enum offset offset, unsigned int size, int allowed_values, ...)
+//! \brief Check whether current setting value is a known value
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param offset Offset of setting location from beginning of file
+//! \param size Storage size of setting
+//! \param known_values Variable number of known values. Indicate end of list by negative value.
+//! \return result.RESULT_ERROR on read error\n
+//! result.RESULT_INVALID when unknown value was read\n
+//! result.RESULT_OK otherwise
+enum result analyse_value(FILE *nvpipe, enum nvpipe_offset offset, unsigned int size, int known_values, ...)
 {
 	// read current value
 	unsigned int value = 0;
@@ -105,13 +121,13 @@ enum result analyse_value(FILE *nvpipe, enum offset offset, unsigned int size, i
 
 	// compare against each known value
 	va_list list;
-	va_start(list, allowed_values);
-	int allowed_value;
+	va_start(list, known_values);
+	int known_value;
 	enum result result = RESULT_INVALID;
 
-	for (allowed_value = allowed_values; allowed_value >= 0; allowed_value = va_arg(list, int))
+	for (known_value = known_values; known_value >= 0; known_value = va_arg(list, int))
 	{
-		if ((int)value == allowed_value)
+		if ((int)value == known_value)
 		{
 			result = RESULT_OK;
 		}
@@ -124,7 +140,17 @@ enum result analyse_value(FILE *nvpipe, enum offset offset, unsigned int size, i
 	return result;
 }
 
-enum result analyse_value_range(FILE *nvpipe, enum offset offset, unsigned int size, unsigned int min, unsigned int max)
+//! \brief Check whether current setting value is in a known range
+//!
+//! \param nvpipe File handle of NVPIPE.DAT
+//! \param offset Offset of setting location from beginning of file
+//! \param size Storage size of setting
+//! \param min Minimal known value
+//! \param max Maximal known value
+//! \return result.RESULT_ERROR on read error\n
+//! result.RESULT_INVALID when value is out of range\n
+//! result.RESULT_OK otherwise
+enum result analyse_value_range(FILE *nvpipe, enum nvpipe_offset offset, unsigned int size, unsigned int min, unsigned int max)
 {
 	// read current value
 	unsigned int value = 0;
