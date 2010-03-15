@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
 
-	if (read_conf(nvpipe, &nvconf) != 0)
+	if (configuration_read(nvpipe, &nvconf) != RESULT_OK)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
 		exit(EXIT_FAILURE);
@@ -749,7 +749,7 @@ int main(int argc, char *argv[])
 
 	if (action_conf)
 	{
-		print_conf(&nvconf);
+		configuration_print(&nvconf);
 	}
 
 	nvpipe = fopen(nvfile, "r+b");
@@ -764,7 +764,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	if (write_conf(nvpipe, &nvconf) != 0)
+	if (configuration_write(nvpipe, &nvconf) == RESULT_ERROR)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);
 		exit(EXIT_FAILURE);

@@ -19,6 +19,49 @@
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 
+enum access
+{
+	ACCESS_READ,
+	ACCESS_WRITE,
+};
+
+enum offset
+{
+	OFFSET_LOG_MODE = 0x0000,
+	OFFSET_CLEAR_MEMORY = 0x0002,
+	OFFSET_DEVICE_ZONE = 0x0004,
+	OFFSET_SHAKE_MODE = 0x0006,
+	OFFSET_SHAKE_MODE_TIME = 0x0008,
+	OFFSET_USERDEFINED_LOG_MODE = 0x000A,
+	OFFSET_CONTRAST = 0x000C,
+	OFFSET_SYSTEM_UNIT = 0x000E,
+	OFFSET_BACKLIGHT_TIME = 0x000F,
+	OFFSET_USERDEFINED_TIME_INTERVAL = 0x0010,
+	OFFSET_USERDEFINED_DISTANCE_INTERVAL = 0x0012,
+	OFFSET_USERDEFINED_HEADING_CHANGE = 0x0014,
+	OFFSET_USERDEFINED_HIGHEST_SPEED = 0x0016,
+	OFFSET_USERDEFINED_HIGH_SPEED = 0x0018,
+	OFFSET_USERDEFINED_MIDDLE_SPEED = 0x001A,
+	OFFSET_USERDEFINED_LOW_SPEED = 0x001C,
+	OFFSET_USERDEFINED_LOWEST_SPEED = 0x001E,
+	OFFSET_USERDEFINED_HIGHEST_SPEED_INTERVAL = 0x0020,
+	OFFSET_USERDEFINED_HIGH_SPEED_INTERVAL = 0x0022,
+	OFFSET_USERDEFINED_MIDDLE_SPEED_INTERVAL = 0x0024,
+	OFFSET_USERDEFINED_LOW_SPEED_INTERVAL = 0x0026,
+	OFFSET_PASSWORD = 0x0204,
+	OFFSET_INITIAL_MIN_SVS = 0x036A,
+	OFFSET_FIX_MODE = 0x036D,
+	OFFSET_FIX_ALTITUDE = 0x036E,
+	OFFSET_INITIAL_MIN_STRENGTH = 0x0372,
+	OFFSET_NAVIGATION_MIN_STRENGTH = 0x0373,
+	OFFSET_PDOP_MASK = 0x037A,
+	OFFSET_TDOP_MASK = 0x037C,
+	OFFSET_P_ACCURACY_MASK = 0x037E,
+	OFFSET_T_ACCURACY_MASK = 0x0380,
+	OFFSET_CHECKSUM = 0x038E,
+	OFFSET_SBAS = 0x0396,
+	OFFSET_GPS_MODE = 0x03FE,
+};
 
 #define CLEAR_MEMORY_NO 0x00
 #define CLEAR_MEMORY_YES 0x01
@@ -46,7 +89,7 @@
 #define FIX_MODE_2D 0x01
 #define FIX_MODE_2D3D 0x02
 #define FIX_MODE_3D 0x03
-
+#define PASSWORD_EMPTY 0xEE
 
 struct naviconf
 {
@@ -86,8 +129,13 @@ struct naviconf
 	unsigned char gps_mode;
 };
 
-int read_conf(FILE *, struct naviconf *);
-int write_conf(FILE *, struct naviconf *);
-void print_conf(struct naviconf *);
+void configuration_password_encode(char *);
+void configuration_password_decode(char *);
+enum result configuration_read_setting(FILE *, enum offset, int, void *);
+enum result configuration_write_setting(FILE *, enum offset, int, void *);
+enum result configuration_readwrite(FILE *, struct naviconf *, enum access);
+enum result configuration_read(FILE *, struct naviconf *);
+enum result configuration_write(FILE *, struct naviconf *);
+void configuration_print(struct naviconf *);
 
 #endif

@@ -22,167 +22,106 @@
 #include "configuration.h"
 
 
-int read_conf(FILE *nvpipe, struct naviconf *nvconf)
+void configuration_password_encode(char *password)
 {
-	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->clear_memory, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0004, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->device_zone, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->shake_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0008, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->shake_mode_time, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000A, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_log_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000C, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->contrast, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000E, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->system_unit, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000F, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->backlight_time, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0010, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_time_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0012, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_distance_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0014, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_heading_change, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0016, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_highest_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0018, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_high_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001A, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_middle_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001C, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_low_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001E, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_lowest_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0020, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_highest_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0022, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_high_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0024, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_middle_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0026, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->userdefined_low_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0204, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->password, 10, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036A, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->initial_min_svs, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036D, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->fix_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036E, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->fix_altitude, 3, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0372, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->initial_min_strength, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0373, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->navigation_min_strength, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037A, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->pdop_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037C, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->tdop_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037E, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->p_accuracy_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0380, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->t_accuracy_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x038E, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->checksum, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0396, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->sbas, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
-	if (fread(&nvconf->gps_mode, 2, 1, nvpipe) != 1) return -1;
-
-	int i = 0;
-	unsigned char *ptr = (unsigned char*)nvconf->password;
-	while (*(ptr++) != 0xEE && i++ < 10);
-	*(ptr-1) = 0;
-
-	return 0;
+	memset(password+strlen(password), PASSWORD_EMPTY, 10-strlen(password));
 }
 
-int write_conf(FILE *nvpipe, struct naviconf *nvconf)
+void configuration_password_decode(char *password)
 {
-	memset(nvconf->password+strlen(nvconf->password), 0xEE, 10-strlen(nvconf->password));
-
-	if (fseek(nvpipe, 0x0000, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->log_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0002, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->clear_memory, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0004, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->device_zone, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0006, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->shake_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0008, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->shake_mode_time, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000A, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_log_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000C, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->contrast, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000E, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->system_unit, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x000F, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->backlight_time, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0010, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_time_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0012, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_distance_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0014, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_heading_change, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0016, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_highest_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0018, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_high_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001A, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_middle_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001C, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_low_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x001E, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_lowest_speed, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0020, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_highest_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0022, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_high_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0024, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_middle_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0026, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->userdefined_low_speed_interval, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0204, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->password, 10, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036A, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->initial_min_svs, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036D, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->fix_mode, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x036E, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->fix_altitude, 3, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0372, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->initial_min_strength, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0373, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->navigation_min_strength, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037A, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->pdop_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037C, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->tdop_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x037E, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->p_accuracy_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0380, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->t_accuracy_mask, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x038E, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->checksum, 2, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x0396, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->sbas, 1, 1, nvpipe) != 1) return -1;
-	if (fseek(nvpipe, 0x03FE, SEEK_SET) != 0) return -1;
-	if (fwrite(&nvconf->gps_mode, 1, 1, nvpipe) != 1) return -1;
-
 	int i = 0;
-	unsigned char *ptr = (unsigned char*)nvconf->password;
-	while (*(ptr++) != 0xEE && i++ < 10);
+	unsigned char *ptr = (unsigned char*)password;
+	while (*(ptr++) != PASSWORD_EMPTY && i++ < 10);
 	*(ptr-1) = 0;
-
-	return 0;
 }
 
-void print_conf(struct naviconf *nvconf)
+enum result configuration_read_setting(FILE *nvpipe, enum offset offset, int size, void *buffer)
+{
+	if (fseek(nvpipe, offset, SEEK_SET) != 0) return RESULT_ERROR;
+	if (fread(buffer, size, 1, nvpipe) != 1) return RESULT_ERROR;
+	return RESULT_OK;
+}
+
+enum result configuration_write_setting(FILE *nvpipe, enum offset offset, int size, void *buffer)
+{
+	if (fseek(nvpipe, offset, SEEK_SET) != 0) return RESULT_ERROR;
+	if (fwrite(buffer, size, 1, nvpipe) != 1) return RESULT_ERROR;
+	return RESULT_OK;
+}
+
+enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum access access)
+{
+	enum result (*ptr)(FILE *, enum offset, int, void *);
+
+	if (access == ACCESS_WRITE)
+	{
+		ptr = &configuration_write_setting;
+	}
+	else
+	{
+		ptr = &configuration_read_setting;
+	}
+
+	if (ptr(nvpipe, OFFSET_LOG_MODE, 1, &nvconf->log_mode) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_CLEAR_MEMORY, 1, &nvconf->clear_memory) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_DEVICE_ZONE, 2, &nvconf->device_zone) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_SHAKE_MODE, 1, &nvconf->shake_mode) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_SHAKE_MODE_TIME, 1, &nvconf->shake_mode_time) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_LOG_MODE, 1, &nvconf->userdefined_log_mode) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_CONTRAST, 1, &nvconf->contrast) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_SYSTEM_UNIT, 1, &nvconf->system_unit) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_BACKLIGHT_TIME, 1, &nvconf->backlight_time) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_TIME_INTERVAL, 2, &nvconf->userdefined_time_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_DISTANCE_INTERVAL, 2, &nvconf->userdefined_distance_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_HEADING_CHANGE, 1, &nvconf->userdefined_heading_change) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_HIGHEST_SPEED, 2, &nvconf->userdefined_highest_speed) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_HIGH_SPEED, 2, &nvconf->userdefined_high_speed) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_MIDDLE_SPEED, 2, &nvconf->userdefined_middle_speed) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_LOW_SPEED, 2, &nvconf->userdefined_low_speed) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_LOWEST_SPEED, 2, &nvconf->userdefined_lowest_speed) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_HIGHEST_SPEED_INTERVAL, 2, &nvconf->userdefined_highest_speed_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_HIGH_SPEED_INTERVAL, 2, &nvconf->userdefined_high_speed_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_MIDDLE_SPEED_INTERVAL, 2, &nvconf->userdefined_middle_speed_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_USERDEFINED_LOW_SPEED_INTERVAL, 2, &nvconf->userdefined_low_speed_interval) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_PASSWORD, 10, &nvconf->password) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_INITIAL_MIN_SVS, 1, &nvconf->initial_min_svs) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_FIX_MODE, 1, &nvconf->fix_mode) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_FIX_ALTITUDE, 3, &nvconf->fix_altitude) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_INITIAL_MIN_STRENGTH, 1, &nvconf->initial_min_strength) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_NAVIGATION_MIN_STRENGTH, 1, &nvconf->navigation_min_strength) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_PDOP_MASK, 2, &nvconf->pdop_mask) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_TDOP_MASK, 2, &nvconf->tdop_mask) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_P_ACCURACY_MASK, 2, &nvconf->p_accuracy_mask) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_T_ACCURACY_MASK, 2, &nvconf->t_accuracy_mask) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_CHECKSUM, 2, &nvconf->checksum) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_SBAS, 2, &nvconf->sbas) == RESULT_ERROR) return RESULT_ERROR;
+	if (ptr(nvpipe, OFFSET_GPS_MODE, 2, &nvconf->gps_mode) == RESULT_ERROR) return RESULT_ERROR;
+
+	return RESULT_OK;
+}
+
+enum result configuration_read(FILE *nvpipe, struct naviconf *nvconf)
+{
+	if (configuration_readwrite(nvpipe, nvconf, ACCESS_READ) == RESULT_ERROR) return RESULT_ERROR;
+	configuration_password_decode(nvconf->password);
+
+	return RESULT_OK;
+}
+
+enum result configuration_write(FILE *nvpipe, struct naviconf *nvconf)
+{
+	configuration_password_encode(nvconf->password);
+	if (configuration_readwrite(nvpipe, nvconf, ACCESS_WRITE) == RESULT_ERROR)
+	{
+		configuration_password_decode(nvconf->password);
+		return RESULT_ERROR;
+	}
+	configuration_password_decode(nvconf->password);
+
+	return RESULT_OK;
+}
+
+void configuration_print(struct naviconf *nvconf)
 {
 	puts("Geräteeinstellungen");
 	puts("-------------------");
