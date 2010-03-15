@@ -80,7 +80,7 @@ int analyze(FILE *nvpipe)
 
 		if (showinfo)
 		{
-			printf("time = %4d-%.2d-%.2dT%.2d:%.2d:%.2dZ\n", 2000+point.time.Y, point.time.m, point.time.d, point.time.h, point.time.i, point.time.s);
+			printf("time = %s\n", navitime_gpx(point.time));
 			printf("lat = %.7f, lon = %.7f, alt = %d\n", (double)point.latitude/10000000, (double)point.longitude/10000000, point.height);
 		}
 	}

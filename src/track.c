@@ -202,7 +202,7 @@ void track_print(FILE *output, struct trackpoint *start)
 		{
 			fprintf(output, "<wpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 			fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
-			fprintf(output, "<time>%d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
+			fprintf(output, "<time>%s</time>\n", navitime_gpx(ptr->time));
 			fprintf(output, "<name>Push Log Point %d</name>\n", ++count_waypoint);
 			fprintf(output, "</wpt>\n");
 		}
@@ -230,7 +230,7 @@ void track_print(FILE *output, struct trackpoint *start)
 
 			// neuen Track starten
 			fprintf(output, "<trk>\n");
-			fprintf(output, "<name>%4d-%.2d-%.2d %.2d-%.2d-%.2d</name>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
+			fprintf(output, "<name>%s</name>\n", navitime_file(ptr->time));
 			fprintf(output, "<number>%d</number>\n", ++counter_track);
 			fprintf(output, "<trkseg>\n");
 		}
@@ -238,7 +238,7 @@ void track_print(FILE *output, struct trackpoint *start)
 		// Trackpunkt ausgeben
 		fprintf(output, "<trkpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 		fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
-		fprintf(output, "<time>%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ</time>\n", 2000+ptr->time.Y, ptr->time.m, ptr->time.d, ptr->time.h, ptr->time.i, ptr->time.s);
+		fprintf(output, "<time>%s</time>\n", navitime_gpx(ptr->time));
 		fprintf(output, "</trkpt>\n");
 
 		ptr = ptr->next;
@@ -260,4 +260,22 @@ void track_write(char *output, struct trackpoint *start)
 	check_file_handle(file, output);
 	track_print(file, start);
 	fclose(file);
+}
+
+char *navitime_gpx(struct navitime time)
+{
+	char buffer[100];
+	return navitime_to_string(buffer, "%4d-%.2d-%.2dT%.2d:%.2d:%.2dZ", time);
+}
+
+char *navitime_file(struct navitime time)
+{
+	char buffer[100];
+	return navitime_to_string(buffer, "%4d-%.2d-%.2d %.2d-%.2d-%.2d", time);
+}
+
+char *navitime_to_string(char *buffer, char *format, struct navitime time)
+{
+	sprintf(buffer, format, 2000+time.Y, time.m, time.d, time.h, time.i, time.s);
+	return buffer;
 }

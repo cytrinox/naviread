@@ -69,5 +69,8 @@ struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
 struct tracklist *track_split(struct trackpoint *);
 void track_print(FILE *, struct trackpoint *);
 void track_write(char *, struct trackpoint *);
+char *navitime_gpx(struct navitime);
+char *navitime_file(struct navitime);
+char *navitime_to_string(char *, char *, struct navitime);
 
 #endif

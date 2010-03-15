@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		while (tracks)
 		{
 			char buffer[100];
-			sprintf(buffer, "%4d-%.2d-%.2d %.2d-%.2d-%.2d.gpx", 2000+tracks->item->time.Y, tracks->item->time.m, tracks->item->time.d, tracks->item->time.h, tracks->item->time.i, tracks->item->time.s);
+			sprintf(buffer, "%s.gpx", navitime_file(tracks->item->time));
 			track_write(buffer, tracks->item);
 			tracks = tracks->next;
 		}
