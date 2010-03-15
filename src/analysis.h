@@ -19,7 +19,6 @@
 #ifndef ANALYSIS_H_
 #define ANALYSIS_H_
 
-#include <stdio.h>
 
 int analyze(FILE *);
 

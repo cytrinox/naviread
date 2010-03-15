@@ -19,8 +19,6 @@
 #ifndef TRACK_H_
 #define TRACK_H_
 
-#include <stdio.h>
-
 #define TRACKPOINT_TYPE_NEW_TRACK 1
 #define TRACKPOINT_TYPE_WAYPOINT 2
 #define TRACKPOINT_TYPE_EMPTY 255

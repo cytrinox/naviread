@@ -19,7 +19,6 @@
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 
-#include <stdio.h>
 
 #define CLEAR_MEMORY_NO 0x00
 #define CLEAR_MEMORY_YES 0x01
