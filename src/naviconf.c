@@ -145,11 +145,11 @@ int main(int argc, char *argv[])
 				break;
 
 			case KEY_CLEAR_MEMORY:
-				if (optarg != NULL && ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "no") || !strcasecmp(optarg, "off")))
+				if (optarg != NULL && option_disable(optarg))
 				{
 					nvconf.clear_memory = CLEAR_MEMORY_NO;
 				}
-				else if (optarg == NULL || (*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
+				else if (optarg == NULL || option_enable(optarg))
 				{
 					nvconf.clear_memory = CLEAR_MEMORY_YES;
 				}
@@ -271,11 +271,11 @@ int main(int argc, char *argv[])
 				break;
 
 			case KEY_SET_SHAKE_MODE:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
+				if (option_disable(optarg))
 				{
 					nvconf.shake_mode = SHAKE_MODE_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
+				else if (option_enable(optarg))
 				{
 					nvconf.shake_mode = SHAKE_MODE_ON;
 				}
@@ -594,11 +594,11 @@ int main(int argc, char *argv[])
 				break;
 
 			case KEY_SET_SBAS:
-				if ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off"))
+				if (option_disable(optarg))
 				{
 					nvconf.sbas = SBAS_OFF;
 				}
-				else if ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on"))
+				else if (option_enable(optarg))
 				{
 					nvconf.sbas = SBAS_ON;
 				}
@@ -789,6 +789,16 @@ int main(int argc, char *argv[])
 
 
 	return 0;
+}
+
+char option_enable(char *optarg)
+{
+	return ((*(optarg+1) == 0 && (*optarg == '1' || *optarg == 'y' || *optarg == 'Y' || *optarg == 'e' || *optarg == 'E')) || !strcasecmp(optarg, "on") || !strcasecmp(optarg, "yes"));
+}
+
+char option_disable(char *optarg)
+{
+	return ((*(optarg+1) == 0 && (*optarg == '0' || *optarg == 'n' || *optarg == 'N' || *optarg == 'd' || *optarg == 'D')) || !strcasecmp(optarg, "off") || !strcasecmp(optarg, "no"));
 }
 
 void usage(char *prog)

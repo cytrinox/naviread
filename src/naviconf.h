@@ -78,6 +78,8 @@ enum
 	KEY_DISABLE_SBAS
 };
 
+char option_enable(char *);
+char option_disable(char *);
 void usage(char *);
 
 #endif
