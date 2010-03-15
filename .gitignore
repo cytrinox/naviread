@@ -12,5 +12,7 @@ config.log
 config.status
 configure
 configure.scan
-src/.deps/
 stamp-h1
+/src/.deps/
+/src/naviconf
+/src/naviread
