@@ -22,6 +22,7 @@
 #include "config.h"
 #include "navi.h"
 #include "naviread.h"
+#include "configuration.h"
 #include "track.h"
 
 
@@ -91,9 +92,7 @@ int main(int argc, char *argv[])
 
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
-
-	// Datensätze zu 16 Byte beginnen ab Adresse 0x00001000
-	fseek(nvpipe, 0x00001000, SEEK_SET);
+	fseek(nvpipe, OFFSET_TRACK, SEEK_SET);
 	struct trackpoint *track = track_read(nvpipe);
 	fclose(nvpipe);
 
