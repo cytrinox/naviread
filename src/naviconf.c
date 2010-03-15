@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
 	fclose(nvpipe);
 
-	char action_conf = 0;
+	char action_conf = 2;
 	char action_analyze = 0;
 
 	opterr = 1;
@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
 	{
 		option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index);
 		if (option == -1) break;
+		if (action_conf == 2) action_conf = 0;
 
 		switch (option)
 		{
