@@ -62,8 +62,10 @@ int analyze(FILE *nvpipe)
 	if (value != GPS_MODE_HIGH_PRECISION && value != GPS_MODE_MIDDLE_PRECISION && value != GPS_MODE_DEFAULT && value != GPS_MODE_MIDDLE_TIME && value != GPS_MODE_FAST_TIME && value != GPS_MODE_USER) printf("unknown value '%u' at offset 0x000003FE\n", value);
 
 	fseek(nvpipe, OFFSET_TRACK, SEEK_SET);
-	while (trackpoint_read(nvpipe, &point) == RESULT_OK)
+	while (trackpoint_read(nvpipe, &point) != RESULT_ERROR)
 	{
+		if (point.type == TRACKPOINT_TYPE_EMPTY) continue;
+
 		showinfo = 0;
 
 		if (point.type & ~(TRACKPOINT_TYPE_NEW_TRACK | TRACKPOINT_TYPE_WAYPOINT | TRACKPOINT_TYPE_WAKEUP))
