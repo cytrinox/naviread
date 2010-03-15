@@ -66,7 +66,7 @@ int analyze(FILE *nvpipe)
 	{
 		showinfo = 0;
 
-		if (point.type & ~7)
+		if (point.type & ~(TRACKPOINT_TYPE_NEW_TRACK | TRACKPOINT_TYPE_WAYPOINT | TRACKPOINT_TYPE_WAKEUP))
 		{
 			printf("unknown value '%u' at offset %#.8lx\n", point.type, ftell(nvpipe)-16);
 			showinfo = 1;
