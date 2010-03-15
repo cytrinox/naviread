@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 				else
 				{
 					fprintf(stderr, "error: invalid value '%s' for option '-%c'\n", optarg, option);
-					fprintf(stderr, "valid values: yes, no\n");
+					fprintf(stderr, "valid values: 1/e/E/y/Y/on/yes or 0/d/D/n/N/off/no\n");
 					exit(EXIT_FAILURE);
 				}
 				break;
@@ -285,7 +285,7 @@ int main(int argc, char *argv[])
 				else
 				{
 					fprintf(stderr, "error: invalid value '%s' for option '-%c'\n", optarg, option);
-					fprintf(stderr, "valid values: on, off\n");
+					fprintf(stderr, "valid values: 1/e/E/y/Y/on/yes or 0/d/D/n/N/off/no\n");
 					exit(EXIT_FAILURE);
 				}
 				break;
@@ -608,7 +608,7 @@ int main(int argc, char *argv[])
 				else
 				{
 					fprintf(stderr, "error: invalid value '%s' for option '-%c'\n", optarg, option);
-					fprintf(stderr, "valid values: on, off\n");
+					fprintf(stderr, "valid values: 1/e/E/y/Y/on/yes or 0/d/D/n/N/off/no\n");
 					exit(EXIT_FAILURE);
 				}
 				break;
