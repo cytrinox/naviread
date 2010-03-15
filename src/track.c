@@ -25,8 +25,6 @@
 
 enum result trackpoint_read(FILE *file, struct trackpoint *point)
 {
-	if (point == NULL) return -1;
-
 	if (fread(&point->type,      1, 1, file) != 1) return RESULT_ERROR;
 	if (fread(&point->unknown,   1, 1, file) != 1) return RESULT_ERROR;
 	if (fread(&point->time,      4, 1, file) != 1) return RESULT_ERROR;
