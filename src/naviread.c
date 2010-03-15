@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 	char *gpxfile = NULL;
 	char *nvfile = NULL;
 	FILE *nvpipe;
-	FILE *gpxpipe;
 
 
 	opterr = 1;
@@ -115,35 +114,13 @@ int main(int argc, char *argv[])
 		{
 			char buffer[100];
 			sprintf(buffer, "%4d-%.2d-%.2d %.2d-%.2d-%.2d.gpx", 2000+tracks->item->time.Y, tracks->item->time.m, tracks->item->time.d, tracks->item->time.h, tracks->item->time.i, tracks->item->time.s);
-
-			gpxpipe = fopen(buffer, "w");
-
-			if (gpxpipe == NULL)
-			{
-				fprintf(stderr, "error opening file '%s'\n", gpxfile);
-				exit(EXIT_FAILURE);
-			}
-
-			track_print(gpxpipe, tracks->item);
-
-			fclose(gpxpipe);
-
+			track_write(buffer, tracks->item);
 			tracks = tracks->next;
 		}
 	}
 	else if (gpxfile != NULL)
 	{
-		gpxpipe = fopen(gpxfile, "w");
-
-		if (gpxpipe == NULL)
-		{
-			fprintf(stderr, "error opening file '%s'\n", gpxfile);
-			exit(EXIT_FAILURE);
-		}
-
-		track_print(gpxpipe, track);
-
-		fclose(gpxpipe);
+		track_write(gpxfile, track);
 	}
 	else
 	{

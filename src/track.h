@@ -68,5 +68,6 @@ struct trackpoint *track_last_point(struct trackpoint *);
 struct trackpoint *track_concat(struct trackpoint *, struct trackpoint *);
 struct tracklist *track_split(struct trackpoint *);
 void track_print(FILE *, struct trackpoint *);
+void track_write(char *, struct trackpoint *);
 
 #endif

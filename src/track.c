@@ -253,3 +253,11 @@ void track_print(FILE *output, struct trackpoint *start)
 
 	fprintf(output, "</gpx>\n");
 }
+
+void track_write(char *output, struct trackpoint *start)
+{
+	FILE *file = fopen(output, "w");
+	check_file_handle(file, output);
+	track_print(file, start);
+	fclose(file);
+}
