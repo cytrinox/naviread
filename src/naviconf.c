@@ -90,12 +90,14 @@ int main(int argc, char *argv[])
 	FILE *nvpipe;
 	struct naviconf nvconf;
 
+	// initial scan of commandline arguments
 	opterr = 1;
 	while ((option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index)) != -1)
 	{
 		if (option == '?') exit(EXIT_FAILURE);
 	}
 
+	// first non-option argument is path to NVPIPE.DAT (required)
 	if (optind < argc)
 	{
 		nvfile = argv[optind++];
@@ -106,6 +108,7 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	// read current configuration
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
 
@@ -117,9 +120,11 @@ int main(int argc, char *argv[])
 
 	fclose(nvpipe);
 
+	// flags for features that can be turned on and off via commandline option
 	char action_conf = 2;
 	char action_analyse = 0;
 
+	// evaluate commandline options
 	opterr = 1;
 	optind = 0;
 	while (1)
@@ -739,7 +744,6 @@ int main(int argc, char *argv[])
 				}
 				break;
 
-			// undefinierte Optionen
 			default:
 				fprintf(stderr, "%s: undefined option -- %c\n", argv[0], option);
 				exit(EXIT_FAILURE);
@@ -747,14 +751,17 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// print current configuration
 	if (action_conf)
 	{
 		configuration_print(&nvconf);
 	}
 
+	// open NVPIPE.DAT for further actions
 	nvpipe = fopen(nvfile, "r+b");
 	check_file_handle(nvpipe, nvfile);
 
+	// analyse NVPIPE.DAT for unknown values
 	if (action_analyse)
 	{
 		if (analyse(nvpipe) == RESULT_ERROR)
@@ -764,6 +771,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// save current configuration
 	if (configuration_write(nvpipe, &nvconf) == RESULT_ERROR)
 	{
 		fprintf(stderr, "'%s' does not seem to be a valid NVPIPE.DAT\n", nvfile);

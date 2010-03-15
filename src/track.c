@@ -25,6 +25,7 @@
 
 enum result trackpoint_read(FILE *file, struct trackpoint *point)
 {
+	// read values into structure
 	if (fread(&point->type,      1, 1, file) != 1) return RESULT_ERROR;
 	if (fread(&point->unknown,   1, 1, file) != 1) return RESULT_ERROR;
 	if (fread(&point->time,      4, 1, file) != 1) return RESULT_ERROR;
@@ -34,12 +35,12 @@ enum result trackpoint_read(FILE *file, struct trackpoint *point)
 
 	if (point->type != TRACKPOINT_TYPE_EMPTY)
 	{
-		// Auslesen erfolgreich
+		// valid record
 		return RESULT_OK;
 	}
 	else
 	{
-		// Auslesen fehlgeschlagen (ungültiger Datensatz)
+		// empty record
 		return RESULT_INVALID;
 	}
 }
@@ -50,6 +51,7 @@ struct trackpoint *track_read(FILE *nvpipe)
 	struct trackpoint *ptr = NULL;
 	struct trackpoint point;
 
+	// read all trackpoints into memory
 	while (trackpoint_read(nvpipe, &point) == RESULT_OK)
 	{
 		if (start == NULL)
@@ -66,12 +68,16 @@ struct trackpoint *track_read(FILE *nvpipe)
 
 	if (ptr) ptr->next = NULL;
 
+	// skip empty trackpoints to look for new trackpoints towards the end of file
+	// new trackpoints are older than already read trackpoints, so concatenate them accordingly
+	// (if storage capacity of logger is full, it overwrites trackpoints from the beginning)
 	if (track_find_next(nvpipe))
 	{
 		struct trackpoint *part = track_read(nvpipe);
 		start = track_concat(part, start);
 	}
 
+	// skip incomplete track at the beginning
 	ptr = start;
 	while (ptr && !(ptr->type & TRACKPOINT_TYPE_NEW_TRACK))
 	{
@@ -191,14 +197,17 @@ void track_print(FILE *output, struct trackpoint *start)
 {
 	struct trackpoint *ptr;
 
+	// print header
 	fprintf(output, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	fprintf(output, "<gpx version=\"1.1\" creator=\"" PACKAGE_STRING "\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/1\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\">\n");
 
+	// print metadata (boundingbox)
 	struct boundingbox bounds = track_boundingbox(start);
 	fprintf(output, "<metadata>\n");
 	fprintf(output, "<bounds minlat=\"%.7f\" minlon=\"%.7f\" maxlat=\"%.7f\" maxlon=\"%.7f\"/>\n", bounds.latitude_min, bounds.longitude_min, bounds.latitude_max, bounds.longitude_max);
 	fprintf(output, "</metadata>\n");
 
+	// print waypoints
 	int count_waypoint = 0;
 	ptr = start;
 
@@ -216,6 +225,7 @@ void track_print(FILE *output, struct trackpoint *start)
 		ptr = ptr->next;
 	}
 
+	// print tracks
 	int counter_track = 0;
 	ptr = start;
 
@@ -223,21 +233,21 @@ void track_print(FILE *output, struct trackpoint *start)
 	{
 		if (ptr->type & TRACKPOINT_TYPE_NEW_TRACK)
 		{
-			// ggf. alten Track abschließen
+			// close old track
 			if (counter_track > 0)
 			{
 				fprintf(output, "</trkseg>\n");
 				fprintf(output, "</trk>\n");
 			}
 
-			// neuen Track starten
+			// open new track
 			fprintf(output, "<trk>\n");
 			fprintf(output, "<name>%s</name>\n", navitime_file(ptr->time));
 			fprintf(output, "<number>%d</number>\n", ++counter_track);
 			fprintf(output, "<trkseg>\n");
 		}
 
-		// Trackpunkt ausgeben
+		// print trackpoint
 		fprintf(output, "<trkpt lat=\"%.7f\" lon=\"%.7f\">\n", (double)ptr->latitude/10000000, (double)ptr->longitude/10000000);
 		fprintf(output, "<ele>%f</ele>\n", (double)ptr->height);
 		fprintf(output, "<time>%s</time>\n", navitime_gpx(ptr->time));
@@ -246,13 +256,14 @@ void track_print(FILE *output, struct trackpoint *start)
 		ptr = ptr->next;
 	}
 
-	// ggf. alten Track abschließen
+	// close last track
 	if (counter_track > 0)
 	{
 		fprintf(output, "</trkseg>\n");
 		fprintf(output, "</trk>\n");
 	}
 
+	// close document
 	fprintf(output, "</gpx>\n");
 }
 

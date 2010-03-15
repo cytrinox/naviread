@@ -51,6 +51,7 @@ enum result configuration_write_setting(FILE *nvpipe, enum offset offset, int si
 
 enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum access access)
 {
+	// select access function
 	enum result (*ptr)(FILE *, enum offset, int, void *);
 
 	if (access == ACCESS_WRITE)
@@ -62,6 +63,7 @@ enum result configuration_readwrite(FILE *nvpipe, struct naviconf *nvconf, enum 
 		ptr = &configuration_read_setting;
 	}
 
+	// read or write values (depending on access function)
 	if (ptr(nvpipe, OFFSET_LOG_MODE, 1, &nvconf->log_mode) == RESULT_ERROR) return RESULT_ERROR;
 	if (ptr(nvpipe, OFFSET_CLEAR_MEMORY, 1, &nvconf->clear_memory) == RESULT_ERROR) return RESULT_ERROR;
 	if (ptr(nvpipe, OFFSET_DEVICE_ZONE, 2, &nvconf->device_zone) == RESULT_ERROR) return RESULT_ERROR;

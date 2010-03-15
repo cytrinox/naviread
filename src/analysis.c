@@ -26,6 +26,7 @@
 
 enum result analyse(FILE *nvpipe)
 {
+	// analyse settings with known distinct values
 	if (analyse_value(nvpipe, OFFSET_LOG_MODE, 1, LOG_MODE_WALK, LOG_MODE_BICYCLE, LOG_MODE_CAR, LOG_MODE_USER, -1) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value(nvpipe, OFFSET_CLEAR_MEMORY, 1, CLEAR_MEMORY_NO, CLEAR_MEMORY_YES, -1) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value(nvpipe, OFFSET_SHAKE_MODE, 1, SHAKE_MODE_OFF, SHAKE_MODE_ON, -1) == RESULT_ERROR) return RESULT_ERROR;
@@ -35,6 +36,7 @@ enum result analyse(FILE *nvpipe)
 	if (analyse_value(nvpipe, OFFSET_SBAS, 1, SBAS_OFF, SBAS_ON, -1) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value(nvpipe, OFFSET_GPS_MODE, 2, GPS_MODE_HIGH_PRECISION, GPS_MODE_MIDDLE_PRECISION, GPS_MODE_DEFAULT, GPS_MODE_MIDDLE_TIME, GPS_MODE_FAST_TIME, GPS_MODE_USER, -1) == RESULT_ERROR) return RESULT_ERROR;
 
+	// analyse settings with known ranges
 	if (analyse_value_range(nvpipe, OFFSET_SHAKE_MODE_TIME, 1, 1, 120) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value_range(nvpipe, OFFSET_CONTRAST, 1, 170, 245) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value_range(nvpipe, OFFSET_BACKLIGHT_TIME, 1, 5, 255) == RESULT_ERROR) return RESULT_ERROR;
@@ -58,27 +60,32 @@ enum result analyse(FILE *nvpipe)
 	if (analyse_value_range(nvpipe, OFFSET_P_ACCURACY_MASK, 2, 0, 10000) == RESULT_ERROR) return RESULT_ERROR;
 	if (analyse_value_range(nvpipe, OFFSET_T_ACCURACY_MASK, 2, 0, 10000) == RESULT_ERROR) return RESULT_ERROR;
 
+	// analyse individual trackpoints
 	fseek(nvpipe, OFFSET_TRACK, SEEK_SET);
 	struct trackpoint point;
 
 	while (trackpoint_read(nvpipe, &point) != RESULT_ERROR)
 	{
+		// skip empty points (only stop at end of file)
 		if (point.type == TRACKPOINT_TYPE_EMPTY) continue;
 
 		char showinfo = 0;
 
+		// analyse trackpoint type
 		if (point.type & ~(TRACKPOINT_TYPE_NEW_TRACK | TRACKPOINT_TYPE_WAYPOINT | TRACKPOINT_TYPE_WAKEUP))
 		{
 			printf("unknown value '%u' at offset %#.8lx\n", point.type, ftell(nvpipe)-16);
 			showinfo = 1;
 		}
 
+		// analyse unknown field (seems to be always zero)
 		if (point.unknown)
 		{
 			printf("unknown value '%u' at offset %#.8lx\n", point.unknown, ftell(nvpipe)-15);
 			showinfo = 1;
 		}
 
+		// print trackpoint information if anomalies were found
 		if (showinfo)
 		{
 			printf("time = %s\n", navitime_gpx(point.time));
@@ -91,10 +98,12 @@ enum result analyse(FILE *nvpipe)
 
 enum result analyse_value(FILE *nvpipe, enum offset offset, unsigned int size, int allowed_values, ...)
 {
+	// read current value
 	unsigned int value = 0;
 	if (size > sizeof(value)) exit(EXIT_FAILURE);
 	if (configuration_read_setting(nvpipe, offset, size, &value) == RESULT_ERROR) return RESULT_ERROR;
 
+	// compare against each known value
 	va_list list;
 	va_start(list, allowed_values);
 	int allowed_value;
@@ -117,10 +126,12 @@ enum result analyse_value(FILE *nvpipe, enum offset offset, unsigned int size, i
 
 enum result analyse_value_range(FILE *nvpipe, enum offset offset, unsigned int size, unsigned int min, unsigned int max)
 {
+	// read current value
 	unsigned int value = 0;
 	if (size > sizeof(value)) exit(EXIT_FAILURE);
 	if (configuration_read_setting(nvpipe, offset, size, &value) == RESULT_ERROR) return RESULT_ERROR;
 
+	// check allowed range
 	if (value < min || value > max)
 	{
 		printf("value '%u' out of range at offset %#.8x\n", value, offset);

@@ -41,12 +41,14 @@ int main(int argc, char *argv[])
 	char *nvfile = NULL;
 	FILE *nvpipe;
 
+	// initial scan of commandline arguments
 	opterr = 1;
 	while ((option = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &index)) != -1)
 	{
 		if (option == '?') exit(EXIT_FAILURE);
 	}
 
+	// first non-option argument is path to NVPIPE.DAT (required)
 	if (optind < argc)
 	{
 		nvfile = argv[optind++];
@@ -57,13 +59,16 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
+	// second non-option argument is path to output file
 	if (optind < argc)
 	{
 		gpxfile = argv[optind++];
 	}
 
+	// flags for features that can be turned on and off via commandline option
 	char option_split = 0;
 
+	// evaluate commandline options
 	opterr = 1;
 	optind = 0;
 	while (1)
@@ -82,7 +87,6 @@ int main(int argc, char *argv[])
 				option_split = 1;
 				break;
 
-			// undefinierte Optionen
 			default:
 				fprintf(stderr, "%s: undefined option -- %c\n", argv[0], option);
 				exit(EXIT_FAILURE);
@@ -90,6 +94,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// read trackpoints from NVPIPE.DAT
 	nvpipe = fopen(nvfile, "rb");
 	check_file_handle(nvpipe, nvfile);
 	fseek(nvpipe, OFFSET_TRACK, SEEK_SET);
@@ -98,6 +103,7 @@ int main(int argc, char *argv[])
 
 	if (option_split)
 	{
+		// split tracks into separate files
 		struct tracklist *tracks = track_split(track);
 
 		while (tracks)
@@ -110,10 +116,12 @@ int main(int argc, char *argv[])
 	}
 	else if (gpxfile != NULL)
 	{
+		// write all tracks into single file
 		track_write(gpxfile, track);
 	}
 	else
 	{
+		// print all tracks to command line
 		track_print(stdout, track);
 	}
 
