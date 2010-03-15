@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include "config.h"
+#include "navi.h"
 #include "track.h"
 
 

@@ -27,13 +27,6 @@
 
 #define TRACKPOINT_SIZE 16
 
-enum result
-{
-	RESULT_OK = 0,
-	RESULT_INVALID = -1,
-	RESULT_ERROR = -2,
-};
-
 struct navitime
 {
 	unsigned int s:6;

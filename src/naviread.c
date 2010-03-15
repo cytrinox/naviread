@@ -20,6 +20,7 @@
 #include <string.h>
 #include <getopt.h>
 #include "config.h"
+#include "navi.h"
 #include "naviread.h"
 #include "track.h"
 

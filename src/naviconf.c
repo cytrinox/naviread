@@ -20,6 +20,7 @@
 #include <string.h>
 #include <getopt.h>
 #include "config.h"
+#include "navi.h"
 #include "naviconf.h"
 #include "analysis.h"
 #include "configuration.h"
