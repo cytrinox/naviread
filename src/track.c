@@ -74,6 +74,15 @@ struct trackpoint *track_read(FILE *nvpipe)
 		start = track_concat(part, start);
 	}
 
+	ptr = start;
+	while (ptr && !(ptr->type & TRACKPOINT_TYPE_NEW_TRACK))
+	{
+		struct trackpoint *old = ptr;
+		ptr = ptr->next;
+		free(old);
+	}
+	start = ptr;
+
 	return start;
 }
 
@@ -213,9 +222,6 @@ void track_print(FILE *output, struct trackpoint *start)
 
 	int counter_track = 0;
 	ptr = start;
-
-	// unvollständigen Track überspringen
-	while (ptr && !(ptr->type & TRACKPOINT_TYPE_NEW_TRACK)) ptr = ptr->next;
 
 	while (ptr)
 	{
